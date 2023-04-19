@@ -22,7 +22,6 @@ export class AuthenticationService {
     });
 
     const compare = await bcrypt.compare(pass, user?.password);
-    console.log({ userpass: user.password, enterpass: pass, compare: compare });
 
     if (!compare) {
       throw new UnauthorizedException();
@@ -32,5 +31,10 @@ export class AuthenticationService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async getUser(id: number) {
+    const user = await this.userRepository.findOne({ where: { id: id } });
+    return user;
   }
 }

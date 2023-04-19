@@ -7,10 +7,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(urlencoded({ extended: true, limit: '50mb' })); //solution to add image
   const config = new DocumentBuilder()
-    .setTitle('Clothing-Shop')
-    .setDescription('This is API Clothing-Shop')
+    .setTitle('Task-management')
+    .setDescription('This is API Task-management')
     .setVersion('1.0')
-    .addTag('Clothing-Shop')
+    .addTag('Task-management')
+    .addBearerAuth({ in: 'header', type: 'http' })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   app.useGlobalPipes(new ValidationPipe());

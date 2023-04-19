@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Query } from '@nestjs/common';
+import { ApiProperty, ApiQuery } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -18,6 +19,9 @@ export class CreateUserDto {
 
   @ApiProperty({ enum: ['Admin', 'User'] })
   position: Role;
+
+  @ApiQuery({ name: 'position', enum: Role })
+  async filterByRole(@Query('position') position: Role = Role.User) {}
 }
 
 export enum Role {
