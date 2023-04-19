@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './authentication/auth.guard';
+import { CalendarModule } from './calendar/calendar.module';
+import { ScheduleModule } from './schedule/schedule.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,6 +35,8 @@ import { AuthGuard } from './authentication/auth.guard';
     ConfigModule,
     UserModule,
     AuthenticationModule,
+    CalendarModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

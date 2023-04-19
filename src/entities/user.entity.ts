@@ -3,8 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Calendar } from './calendar.entity';
+import { Schedule } from './schedule.entity';
 
 @Entity('user')
 export class User {
@@ -28,6 +32,9 @@ export class User {
 
   @Column()
   position: string;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.calendar)
+  schedule: Schedule;
 
   @CreateDateColumn()
   createAt: Date;
