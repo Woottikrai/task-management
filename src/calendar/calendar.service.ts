@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { find } from 'rxjs';
+import { find, scheduled } from 'rxjs';
 import {
   CreateCalendarDto,
   UpdateCalendarDto,
@@ -27,12 +27,6 @@ export class CalendarService {
     }
   }
 
-  async getTask() {
-    try {
-    } catch (error) {
-      throw error;
-    }
-  }
   //   async createTask(calendarRepository: CreateCalendarDto) {
   //     try {
   //       const { userid, date } = calendarRepository;
@@ -60,7 +54,9 @@ export class CalendarService {
 
   async findAll() {
     try {
-      const findCalendarAll = await this.calendarRepository.find();
+      const findCalendarAll = await this.calendarRepository.find({
+        relations: ['scheduled', 'schedule.calendar'],
+      });
       return findCalendarAll;
     } catch (error) {
       throw error;

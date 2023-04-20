@@ -20,25 +20,25 @@ export class CalendarController {
   constructor(private readonly calendarService: CalendarService) {}
 
   @Post('calendar')
-  create(@Body() createDto: CreateCalendarDto) {
-    return this.calendarService.createCalendar(createDto);
+  async create(@Body() createDto: CreateCalendarDto) {
+    return await this.calendarService.createCalendar(createDto);
   }
 
   @Get('calendar')
-  findAll() {
-    return this.calendarService.findAll();
+  async findAll() {
+    return await this.calendarService.findAll();
   }
 
   @Get('calendar:id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.calendarService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.calendarService.findOne(id);
   }
 
   @Patch('user:id')
-  updateUser(
+  async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() UpdateCalendarDto: UpdateCalendarDto,
   ) {
-    return this.calendarService.updateCalendar(id, UpdateCalendarDto);
+    return await this.calendarService.updateCalendar(id, UpdateCalendarDto);
   }
 }

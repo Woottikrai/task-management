@@ -15,7 +15,7 @@ export class UserService {
 
   async createUser(bodyUser: CreateUserDto): Promise<User> {
     try {
-      const password = this.hashPassWord(bodyUser.password);
+      const password = await this.hashPassWord(bodyUser.password);
       console.log(password);
       const newUser = this.userRepository.create({ ...bodyUser, password });
       return this.userRepository.save(newUser);
@@ -26,7 +26,9 @@ export class UserService {
 
   async findUserAll() {
     try {
-      const findUserAll = await this.userRepository.find();
+      const findUserAll = await this.userRepository.find({
+        relations: ['schedule', 'schedule.user'],
+      });
       return findUserAll;
     } catch (error) {
       throw error;
@@ -44,7 +46,11 @@ export class UserService {
 
   async updateUser(id: number, bodyUser: UpdateUserDto) {
     try {
-      const updateUser = await this.userRepository.update(id, bodyUser);
+      const updateHash = await this.hashPassWord(bodyUser.password);
+      const updateUser = await this.userRepository.update(id, {
+        ...bodyUser,
+        password: updateHash,
+      });
       return updateUser;
     } catch (error) {
       throw error;
@@ -60,7 +66,7 @@ export class UserService {
     }
   }
 
-  hashPassWord(password: string) {
+  async hashPassWord(password: string) {
     try {
       const SALT = bcrypt.genSaltSync();
       return bcrypt.hashSync(password, SALT);

@@ -26,4 +26,7 @@ export class CreateUserDto {
   @ApiProperty()
   @IsIn([Role.Admin, Role.User])
   position: string;
+
+  @ApiQuery({ name: 'position', enum: Role })
+  async filterByRole(@Query('position') position: Role = Role.User) {}
 }

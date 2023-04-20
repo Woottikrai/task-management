@@ -1,11 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   Timestamp,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Schedule } from './schedule.entity';
 
@@ -19,4 +22,13 @@ export class Calendar {
 
   @OneToMany(() => Schedule, (schedule) => schedule.calendar)
   schedule: Schedule[];
+
+  @CreateDateColumn()
+  createAt: Date;
+
+  @DeleteDateColumn()
+  deleteAt: Date;
+
+  @UpdateDateColumn()
+  UpdateAt: Date;
 }

@@ -7,6 +7,7 @@ import { Calendar } from 'src/entities/calendar.entity';
 import { User } from 'src/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { CalendarService } from 'src/calendar/calendar.service';
+import { find } from 'rxjs';
 
 @Injectable()
 export class ScheduleService {
@@ -35,6 +36,17 @@ export class ScheduleService {
         calendar: findCalendar,
         user: findUser,
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findSchedule() {
+    try {
+      const findSchedule = await this.scheduleRepository.find({
+        relations: ['user', 'user.schedule', 'calendar', 'calendar.schedule'],
+      });
+      return findSchedule;
     } catch (error) {
       throw error;
     }
