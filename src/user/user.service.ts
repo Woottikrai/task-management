@@ -6,6 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { QueryUser } from './dto/query-user.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -70,6 +71,18 @@ export class UserService {
     try {
       const SALT = bcrypt.genSaltSync();
       return bcrypt.hashSync(password, SALT);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async queryUser(body: QueryUser) {
+    try {
+      const queryUser = this.userRepository
+        .createQueryBuilder('user') //user entity
+        .where('user.name LIKE :name', { name: `%${body.name}%` })
+        .getMany();
+      return queryUser;
     } catch (error) {
       throw error;
     }

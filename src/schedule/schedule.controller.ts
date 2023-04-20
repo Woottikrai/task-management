@@ -17,4 +17,9 @@ export class ScheduleController {
   async findAll() {
     return await this.scheduleService.findSchedule();
   }
+
+  @Get('test')
+  async test() {
+    return await this.scheduleService.random();
+  }
 }

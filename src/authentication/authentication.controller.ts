@@ -31,6 +31,7 @@ export class AuthenticationController {
   @ApiBearerAuth()
   @Get('profile')
   async getProfile(@GetUser() user) {
+    console.log(user);
     return await this.authenticationService.getUser(user.sub);
   }
 }

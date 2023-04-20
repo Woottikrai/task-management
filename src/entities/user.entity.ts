@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Calendar } from './calendar.entity';
+
 import { Schedule } from './schedule.entity';
 
 @Entity('user')
@@ -34,7 +34,7 @@ export class User {
   @Column()
   position: string;
 
-  @OneToMany(() => Schedule, (schedule) => schedule.calendar)
+  @OneToMany(() => Schedule, (schedule) => schedule.user)
   schedule: Schedule[];
 
   @CreateDateColumn()

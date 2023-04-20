@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { QueryUser } from './dto/query-user.dto';
 
 @ApiTags('user')
 @Controller()
@@ -31,6 +33,11 @@ export class UserController {
   @Get('user:id')
   async findUserOne(@Param('id', ParseIntPipe) id: number) {
     return await this.userService.findUserOne(id);
+  }
+
+  @Get('query')
+  async query(@Query() body: QueryUser) {
+    return await this.userService.queryUser(body);
   }
 
   @Patch('user:id')
