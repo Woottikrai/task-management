@@ -9,7 +9,10 @@ import {
 } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateCalendarDto, UpdateCalendarDto } from 'src/dto/calendar.dto';
+import {
+  CreateCalendarDto,
+  UpdateCalendarDto,
+} from 'src/calendar/dto/calendar.dto';
 
 @ApiTags('calendar')
 @Controller('calendar')

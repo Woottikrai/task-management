@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Calendar } from './calendar.entity';
 import { Schedule } from './schedule.entity';
@@ -18,7 +19,7 @@ export class User {
   @Column({ length: 50 })
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -34,11 +35,14 @@ export class User {
   position: string;
 
   @OneToMany(() => Schedule, (schedule) => schedule.calendar)
-  schedule: Schedule;
+  schedule: Schedule[];
 
   @CreateDateColumn()
   createAt: Date;
 
   @DeleteDateColumn()
   deleteAt: Date;
+
+  @UpdateDateColumn()
+  UpdateAt: Date;
 }

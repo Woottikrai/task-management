@@ -10,5 +10,6 @@ import { UserModule } from 'src/user/user.module';
   imports: [TypeOrmModule.forFeature([Calendar]), UserModule],
   controllers: [CalendarController],
   providers: [CalendarService],
+  exports: [CalendarService, CalendarModule],
 })
 export class CalendarModule {}

@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 import { Calendar } from './calendar.entity';
 
@@ -8,8 +14,8 @@ export class Schedule {
   id: number;
 
   @ManyToOne(() => User, (user) => user.schedule)
-  user: User[];
+  user: User;
 
   @ManyToOne(() => Calendar, (calendar) => calendar.schedule)
-  calendar: Calendar[];
+  calendar: Calendar;
 }

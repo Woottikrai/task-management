@@ -18,5 +18,5 @@ export class Calendar {
   date: Date;
 
   @OneToMany(() => Schedule, (schedule) => schedule.calendar)
-  schedule: Schedule;
+  schedule: Schedule[];
 }

@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { LoginDto } from 'src/dto/login.dto';
+import { LoginDto } from 'src/authentication/dto/login.dto';
 import { AuthGuard } from './auth.guard';
 import { GetUser } from './get-user.decorator';
 import { User } from 'src/entities/user.entity';

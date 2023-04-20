@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-
+import { Role } from './create-user.dto';
+import { IsIn } from 'class-validator';
 export class UpdateUserDto {
   @ApiProperty()
   name?: string;
@@ -17,5 +18,6 @@ export class UpdateUserDto {
   tel?: string;
 
   @ApiProperty()
+  @IsIn([Role.Admin, Role.User])
   position?: string;
 }

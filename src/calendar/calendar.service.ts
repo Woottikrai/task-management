@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { find } from 'rxjs';
-import { CreateCalendarDto, UpdateCalendarDto } from 'src/dto/calendar.dto';
+import {
+  CreateCalendarDto,
+  UpdateCalendarDto,
+} from 'src/calendar/dto/calendar.dto';
 // import { CreateCalendarDto } from 'src/dto/calendar.dto';
 import { Calendar } from 'src/entities/calendar.entity';
 import { UserService } from 'src/user/user.service';
@@ -19,6 +22,13 @@ export class CalendarService {
     try {
       const createCalendar = await this.calendarRepository.save(body);
       return createCalendar;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getTask() {
+    try {
     } catch (error) {
       throw error;
     }
