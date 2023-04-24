@@ -11,6 +11,11 @@ import {
 import { User } from './user.entity';
 import { Calendar } from './calendar.entity';
 
+export enum Option {
+  Pay = 'Pay',
+  Do = 'Do',
+}
+
 @Entity('schedule')
 export class Schedule {
   @PrimaryGeneratedColumn()
@@ -21,6 +26,12 @@ export class Schedule {
 
   @ManyToOne(() => Calendar, (calendar) => calendar.schedule, { cascade: true })
   calendar: Calendar;
+
+  @Column()
+  do_pay: string;
+
+  @Column({ nullable: false })
+  how_much: number;
 
   @CreateDateColumn()
   createAt: Date;

@@ -18,6 +18,5 @@ export class UpdateUserDto {
   tel?: string;
 
   @ApiProperty()
-  @IsIn([Role.Admin, Role.User])
-  position?: string;
+  position?: number;
 }

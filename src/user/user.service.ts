@@ -14,12 +14,17 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async createUser(bodyUser: CreateUserDto): Promise<User> {
+  async createUser(bodyUser: CreateUserDto) {
     try {
+      const { position, ...other } = bodyUser;
       const password = await this.hashPassWord(bodyUser.password);
       console.log(password);
-      const newUser = this.userRepository.create({ ...bodyUser, password });
-      return this.userRepository.save(newUser);
+      const newUser = this.userRepository.create({
+        ...other,
+        positionId: position,
+        password,
+      });
+      return await this.userRepository.save(newUser);
     } catch (error) {
       throw error;
     }
@@ -47,9 +52,11 @@ export class UserService {
 
   async updateUser(id: number, bodyUser: UpdateUserDto) {
     try {
+      const { position, ...other } = bodyUser;
       const updateHash = await this.hashPassWord(bodyUser.password);
       const updateUser = await this.userRepository.update(id, {
-        ...bodyUser,
+        ...other,
+        positionId: position,
         password: updateHash,
       });
       return updateUser;
@@ -80,7 +87,7 @@ export class UserService {
     try {
       const queryUser = this.userRepository
         .createQueryBuilder('user') //user entity
-        .where('user.name LIKE :name', { name: `%${body.name}%` })
+        .where('user.name LIKE :name', { name: `%${body?.name}%` })
         .getMany();
       return queryUser;
     } catch (error) {

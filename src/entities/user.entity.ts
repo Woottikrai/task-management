@@ -3,13 +3,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+import { Exclude } from 'class-transformer';
 import { Schedule } from './schedule.entity';
+import { Position } from './position.entity';
 
 @Entity('user')
 export class User {
@@ -31,8 +33,12 @@ export class User {
   @Column()
   tel: string;
 
+  @ManyToOne(() => Position, (position) => position.user)
+  position: Position;
+
   @Column()
-  position: string;
+  @Exclude()
+  positionId: number;
 
   @OneToMany(() => Schedule, (schedule) => schedule.user)
   schedule: Schedule[];

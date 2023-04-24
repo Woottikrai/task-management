@@ -9,6 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './authentication/auth.guard';
 import { CalendarModule } from './calendar/calendar.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { PositionModule } from './position/position.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,6 +38,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     AuthenticationModule,
     CalendarModule,
     ScheduleModule,
+    PositionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
