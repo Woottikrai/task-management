@@ -19,4 +19,7 @@ export class CreateScheduleDto {
 
   @ApiProperty()
   how_much: number;
+
+  @ApiProperty()
+  date: string;
 }

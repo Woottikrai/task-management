@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -39,7 +40,7 @@ export class PositionController {
     return await this.positionService.updatePosition(id, body);
   }
 
-  @Get('remove:id')
+  @Delete('remove:id')
   async removePosition(@Param('id', ParseIntPipe) id: number) {
     return await this.positionService.removePosition(id);
   }

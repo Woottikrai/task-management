@@ -43,7 +43,9 @@ export class PositionService {
 
   async findAllPosition() {
     try {
-      const findAllPosition = await this.positionRepository.find();
+      const findAllPosition = await this.positionRepository.find({
+        relations: ['user', 'user.position'],
+      });
       return findAllPosition;
     } catch (error) {
       throw error;

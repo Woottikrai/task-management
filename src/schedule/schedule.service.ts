@@ -3,12 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Repository } from 'typeorm';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
-import { Calendar } from 'src/entities/calendar.entity';
-import { User } from 'src/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { CalendarService } from 'src/calendar/calendar.service';
-import { find, throwError } from 'rxjs';
-import { length } from 'class-validator';
 
 @Injectable()
 export class ScheduleService {
@@ -21,21 +17,15 @@ export class ScheduleService {
 
   async Create(body: CreateScheduleDto) {
     try {
-      const { user, calendar } = body;
+      const { user, calendar, date, ...other } = body;
       const findUser = await this.userService.findUserOne(user);
-      const findCalendar = await this.calendarService.findOne(calendar);
-
-      // const findCalendar = await getConnection()
-      //   .getRepository(Calendar)
-      //   .findOne({ where: { id: body?.calendar } });
-
-      // const findUser = await getConnection()
-      //   .getRepository(User)
-      //   .findOne({ where: { id: body?.user } });
+      const Calendar = await this.calendarService.findOne(calendar);
+      const finddate = await this.calendarService.findDate(date);
 
       await this.scheduleRepository.save({
-        calendar: findCalendar,
+        calendar: Calendar,
         user: findUser,
+        ...other,
       });
     } catch (error) {
       throw error;
@@ -53,16 +43,25 @@ export class ScheduleService {
     }
   }
 
-  async random() {
-    try {
-      const users = await this.userService.findUserAll();
-      const length = users.length;
-      let arr = [];
-      for (const u of users) {
-      }
-      console.log(length);
-    } catch (error) {
-      throw error;
-    }
-  }
+  // async random() {
+  //   try {
+  //     let arr = [];
+  //     const users = await this.userService.findUserAll();
+  //     const length = users.length;
+  //     for (const u of users) {
+  //       console.log(u);
+  //     }
+  //     console.log(length);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  // const findCalendar = await getConnection()
+  //   .getRepository(Calendar)
+  //   .findOne({ where: { id: body?.calendar } });
+
+  // const findUser = await getConnection()
+  //   .getRepository(User)
+  //   .findOne({ where: { id: body?.user } });
 }

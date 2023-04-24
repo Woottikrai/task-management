@@ -16,7 +16,7 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { QueryUser } from './dto/query-user.dto';
 
 @ApiTags('user')
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

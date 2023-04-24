@@ -9,6 +9,7 @@ import {
 import { Calendar } from 'src/entities/calendar.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import * as dayjs from 'dayjs';
 @Injectable()
 export class CalendarService {
@@ -27,21 +28,48 @@ export class CalendarService {
     }
   }
 
-  //   async createTask(calendarRepository: CreateCalendarDto) {
-  //     try {
-  //       const { userid, date } = calendarRepository;
-  //       for (const u of userid) {
-  //         const findUser = await this.userService.findUserOne(u);
-  //         console.log(findUser);
-  //         const task = await this.calendarRepository.save({
-  //           user: findUser,
-  //           date: date,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       throw error;
-  //     }
-  //   }
+  async findDate(date: string) {
+    try {
+      const find = this.calendarRepository
+        .createQueryBuilder('calendar')
+        .where('calendar.date =:date ', { date: date })
+        .getOne();
+      return await find;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // --------------------------------------------------------------------------------
+  async createDate() {
+    try {
+      let isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
+      dayjs.extend(isSameOrBefore);
+      const startDate = dayjs().startOf('week').add(1, 'day'); // Monday of current week
+      const endDate = dayjs().startOf('week').add(5, 'day'); // Friday of current week '2023-04-17'
+      const daysOfWeek = [];
+
+      for (
+        let date = startDate;
+        date.isSameOrBefore(endDate);
+        date = date.add(1, 'day')
+      ) {
+        daysOfWeek.push({
+          date: date.format('YYYY-MM-DD'),
+        });
+      }
+
+      for (let d of daysOfWeek) {
+        await this.calendarRepository.save({
+          ...this.calendarRepository,
+          date: dayjs(d.date).format('YYYY-MM-DD'),
+        });
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  // ---------------------------------------------------------------------------------------
 
   async findOne(id: number) {
     try {
@@ -82,4 +110,20 @@ export class CalendarService {
       throw error;
     }
   }
+
+  //   async createTask(calendarRepository: CreateCalendarDto) {
+  //     try {
+  //       const { userid, date } = calendarRepository;
+  //       for (const u of userid) {
+  //         const findUser = await this.userService.findUserOne(u);
+  //         console.log(findUser);
+  //         const task = await this.calendarRepository.save({
+  //           user: findUser,
+  //           date: date,
+  //         });
+  //       }
+  //     } catch (error) {
+  //       throw error;
+  //     }
+  //   }
 }

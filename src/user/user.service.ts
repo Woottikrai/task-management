@@ -33,7 +33,7 @@ export class UserService {
   async findUserAll() {
     try {
       const findUserAll = await this.userRepository.find({
-        relations: ['schedule', 'schedule.user'],
+        relations: ['schedule', 'schedule.user', 'position', 'position.user'],
       });
       return findUserAll;
     } catch (error) {

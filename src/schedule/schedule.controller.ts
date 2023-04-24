@@ -18,8 +18,8 @@ export class ScheduleController {
     return await this.scheduleService.findSchedule();
   }
 
-  @Get('test')
-  async test() {
-    return await this.scheduleService.random();
-  }
+  // @Get('test')
+  // async test() {
+  //   return await this.scheduleService.random();
+  // }
 }
