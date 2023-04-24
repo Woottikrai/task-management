@@ -20,27 +20,27 @@ import { QueryUser } from './dto/query-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('user')
+  @Post('create')
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.createUser(createUserDto);
   }
 
-  @Get('user')
+  @Get('findAll')
   async findUserAll() {
     return await this.userService.findUserAll();
   }
 
-  @Get('user:id')
+  @Get('findOne:id')
   async findUserOne(@Param('id', ParseIntPipe) id: number) {
     return await this.userService.findUserOne(id);
   }
 
-  @Get('query')
+  @Get('search')
   async query(@Query() body: QueryUser) {
     return await this.userService.queryUser(body);
   }
 
-  @Patch('user:id')
+  @Patch('update:id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUser: UpdateUserDto,
@@ -48,7 +48,7 @@ export class UserController {
     return await this.userService.updateUser(id, updateUser);
   }
 
-  @Delete('user:id')
+  @Delete('remove:id')
   async deleteUser(@Param('id') id: number) {
     return await this.userService.removeUser(id);
   }

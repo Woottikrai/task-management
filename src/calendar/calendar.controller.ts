@@ -19,22 +19,22 @@ import {
 export class CalendarController {
   constructor(private readonly calendarService: CalendarService) {}
 
-  @Post('calendar')
+  @Post('create')
   async create(@Body() createDto: CreateCalendarDto) {
     return await this.calendarService.createCalendar(createDto);
   }
 
-  @Get('calendar')
+  @Get('findAll')
   async findAll() {
     return await this.calendarService.findAll();
   }
 
-  @Get('calendar:id')
+  @Get('findOne:id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.calendarService.findOne(id);
   }
 
-  @Patch('user:id')
+  @Patch('update:id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() UpdateCalendarDto: UpdateCalendarDto,

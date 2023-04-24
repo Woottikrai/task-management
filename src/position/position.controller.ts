@@ -27,7 +27,7 @@ export class PositionController {
   }
 
   @Get('findOne:id')
-  async findOnePosition(@Param() id: number) {
+  async findOnePosition(@Param('id', ParseIntPipe) id: number) {
     return await this.positionService.findOnePosition(id);
   }
 
