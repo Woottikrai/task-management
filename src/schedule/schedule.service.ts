@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UserService } from 'src/user/user.service';
 import { CalendarService } from 'src/calendar/calendar.service';
-import { UpdateCalendarDto } from 'src/calendar/dto/calendar.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 
 @Injectable()
@@ -45,8 +44,8 @@ export class ScheduleService {
       }
 
       const merge = this.scheduleRepository.merge(schedule, {
-        do_pay: doPay,
-        how_much: howMuch,
+        dopay: doPay,
+        howmuch: howMuch,
         calendarId: calendar,
         userId: user,
       });
@@ -68,15 +67,41 @@ export class ScheduleService {
     }
   }
 
+  //Sum Monney
+  async sumPay() {
+    try {
+      const sumPay = this.scheduleRepository
+        .createQueryBuilder('schedule')
+        .select('SUM(schedule.howmuch)')
+        .getRawOne();
+      return await sumPay;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOneSchedule(id: number) {
+    try {
+      const findOneSchedule = await this.scheduleRepository.findOneBy({
+        id: id,
+      });
+      return findOneSchedule;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteTask(id: number) {
+    try {
+      const deleteTask = await this.scheduleRepository.softRemove({ id: id });
+      return deleteTask;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async random() {
     try {
-      let arr = [];
-      const users = await this.userService.findUserAll();
-
-      for (const u of users) {
-        console.log(u);
-      }
-      console.log(length);
     } catch (error) {
       throw error;
     }

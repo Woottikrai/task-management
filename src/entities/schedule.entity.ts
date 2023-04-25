@@ -37,10 +37,10 @@ export class Schedule {
   calendarId: number;
 
   @Column()
-  do_pay: string;
+  dopay: string;
 
   @Column({ nullable: false })
-  how_much: number;
+  howmuch: number;
 
   @CreateDateColumn()
   createAt: Date;

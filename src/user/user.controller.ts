@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { QueryUser } from './dto/query-user.dto';
+import { QueryByPosition, QueryUser } from './dto/query-user.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -25,20 +25,33 @@ export class UserController {
     return await this.userService.createUser(createUserDto);
   }
 
-  @Get('findAll')
+  @Get()
   async findUserAll() {
     return await this.userService.findUserAll();
-  }
-
-  @Get('findOne:id')
-  async findUserOne(@Param('id', ParseIntPipe) id: number) {
-    return await this.userService.findUserOne(id);
   }
 
   @Get('search')
   async query(@Query() body: QueryUser) {
     return await this.userService.queryUser(body);
   }
+
+  @Get('query-by-position')
+  async queryByPosition(@Query() filter: QueryByPosition) {
+    try {
+      const [data, count] = await this.userService.queryByPosition(filter);
+      return {
+        data: data,
+        count: count,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // @Get(':id')
+  // async findUserOne(@Param('id', ParseIntPipe) id: number) {
+  //   return await this.userService.findUserOne(id);
+  // }
 
   @Patch('update:id')
   async updateUser(

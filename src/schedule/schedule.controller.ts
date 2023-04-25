@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -27,6 +28,11 @@ export class ScheduleController {
     return await this.scheduleService.findSchedule();
   }
 
+  @Get('sumpay')
+  async getSumPay() {
+    return await this.scheduleService.sumPay();
+  }
+
   @Patch('update/:id')
   async updateSchedule(
     @Param('id', ParseIntPipe) id: number,
@@ -36,8 +42,9 @@ export class ScheduleController {
 
     return await this.scheduleService.updateSchedule(id, UpdateScheduleDto);
   }
-  // @Get('test')
-  // async test() {
-  //   return await this.scheduleService.random();
-  // }
+
+  @Delete('delete-task/:id')
+  async deleteSchedule(@Param('id', ParseIntPipe) id: number) {
+    return await this.scheduleService.deleteTask(id);
+  }
 }

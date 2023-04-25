@@ -6,7 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { QueryUser } from './dto/query-user.dto';
+import { QueryByPosition, QueryUser } from './dto/query-user.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -85,11 +85,34 @@ export class UserService {
 
   async queryUser(body: QueryUser) {
     try {
-      const queryUser = this.userRepository
+      const queryUser = await this.userRepository
         .createQueryBuilder('user') //user entity
         .where('user.name LIKE :name', { name: `%${body?.name}%` })
         .getMany();
       return queryUser;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async queryByPosition(filter: QueryByPosition) {
+    try {
+      const { position } = filter;
+      const queryByPositionFrontend = this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.position', 'position')
+        .where('user.position = :position', {
+          position: position,
+        });
+
+      return await queryByPositionFrontend.getManyAndCount();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async countByPosition() {
+    try {
     } catch (error) {
       throw error;
     }

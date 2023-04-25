@@ -6,3 +6,9 @@ export class QueryUser {
   @IsOptional()
   name: string;
 }
+
+export class QueryByPosition {
+  @ApiProperty()
+  @IsOptional()
+  position: number;
+}

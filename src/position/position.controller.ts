@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { PositionService } from './position.service';
@@ -32,7 +33,7 @@ export class PositionController {
     return await this.positionService.findOnePosition(id);
   }
 
-  @Post('update:id')
+  @Patch('update:id')
   async updatePosition(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdatePositionDto,
