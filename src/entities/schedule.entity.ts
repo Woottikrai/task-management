@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Calendar } from './calendar.entity';
+import { Exclude } from 'class-transformer';
 
 export enum Option {
   Pay = 'Pay',
@@ -24,8 +25,16 @@ export class Schedule {
   @ManyToOne(() => User, (user) => user.schedule, { cascade: true })
   user: User;
 
+  @Column()
+  @Exclude()
+  userId: number;
+
   @ManyToOne(() => Calendar, (calendar) => calendar.schedule, { cascade: true })
   calendar: Calendar;
+
+  @Column()
+  @Exclude()
+  calendarId: number;
 
   @Column()
   do_pay: string;

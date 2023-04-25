@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn } from 'class-validator';
 
-export enum DoPay {
+export enum Status {
   Pay = 'Pay',
   Do = 'Do',
 }
@@ -14,12 +14,9 @@ export class CreateScheduleDto {
   user: number;
 
   @ApiProperty()
-  @IsIn([DoPay.Do, DoPay.Pay])
-  do_pay: string;
+  @IsIn([Status.Do, Status.Pay])
+  dopay: string;
 
   @ApiProperty()
-  how_much: number;
-
-  @ApiProperty()
-  date: string;
+  howmuch: number;
 }

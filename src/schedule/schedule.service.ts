@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from 'src/entities/schedule.entity';
 import { Repository } from 'typeorm';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UserService } from 'src/user/user.service';
 import { CalendarService } from 'src/calendar/calendar.service';
+import { UpdateCalendarDto } from 'src/calendar/dto/calendar.dto';
+import { UpdateScheduleDto } from './dto/update-schedule.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -17,16 +19,39 @@ export class ScheduleService {
 
   async Create(body: CreateScheduleDto) {
     try {
-      const { user, calendar, date, ...other } = body;
+      const { user, calendar, ...other } = body;
       const findUser = await this.userService.findUserOne(user);
       const Calendar = await this.calendarService.findOne(calendar);
-      const finddate = await this.calendarService.findDate(date);
-
       await this.scheduleRepository.save({
         calendar: Calendar,
         user: findUser,
         ...other,
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateSchedule(id: number, body: UpdateScheduleDto) {
+    try {
+      console.log(id);
+      const { user, calendar, doPay, howMuch } = body;
+      const schedule = await this.scheduleRepository.findOne({
+        where: { id: id },
+      });
+
+      if (!schedule) {
+        throw new BadRequestException('schedule not found');
+      }
+
+      const merge = this.scheduleRepository.merge(schedule, {
+        do_pay: doPay,
+        how_much: howMuch,
+        calendarId: calendar,
+        userId: user,
+      });
+
+      return await this.scheduleRepository.save(merge);
     } catch (error) {
       throw error;
     }
@@ -43,19 +68,19 @@ export class ScheduleService {
     }
   }
 
-  // async random() {
-  //   try {
-  //     let arr = [];
-  //     const users = await this.userService.findUserAll();
-  //     const length = users.length;
-  //     for (const u of users) {
-  //       console.log(u);
-  //     }
-  //     console.log(length);
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  async random() {
+    try {
+      let arr = [];
+      const users = await this.userService.findUserAll();
+
+      for (const u of users) {
+        console.log(u);
+      }
+      console.log(length);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // const findCalendar = await getConnection()
   //   .getRepository(Calendar)

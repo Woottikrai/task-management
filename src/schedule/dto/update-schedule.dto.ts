@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn } from 'class-validator';
 
-import { DoPay } from './create-schedule.dto';
+import { Status } from './create-schedule.dto';
 export class UpdateScheduleDto {
   @ApiProperty()
   calendar: number;
@@ -10,9 +10,9 @@ export class UpdateScheduleDto {
   user: number;
 
   @ApiProperty()
-  @IsIn([DoPay.Do, DoPay.Pay])
-  do_pay: string;
+  @IsIn([Status.Do, Status.Pay])
+  doPay: string;
 
   @ApiProperty()
-  how_much: number;
+  howMuch: number;
 }

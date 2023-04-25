@@ -19,10 +19,15 @@ export class CalendarService {
     private userService: UserService,
   ) {}
 
+  //create onedate
   async createCalendar(body: CreateCalendarDto) {
     try {
-      const createCalendar = await this.calendarRepository.save(body);
-      return createCalendar;
+      for (const date of body.date) {
+        await this.calendarRepository.save({
+          ...this.calendarRepository,
+          date: dayjs(date).format('YYYY-MM-DD'),
+        });
+      }
     } catch (error) {
       throw error;
     }
@@ -40,8 +45,8 @@ export class CalendarService {
     }
   }
 
-  // --------------------------------------------------------------------------------
-  async createDate() {
+  // generate date--------------------------------------------------------------------------------
+  async createDates() {
     try {
       let isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
       dayjs.extend(isSameOrBefore);
