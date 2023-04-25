@@ -33,6 +33,11 @@ export class ScheduleController {
     return await this.scheduleService.sumPay();
   }
 
+  @Get('payoften')
+  async payoften() {
+    return this.scheduleService.payOften();
+  }
+
   @Patch('update/:id')
   async updateSchedule(
     @Param('id', ParseIntPipe) id: number,

@@ -48,11 +48,6 @@ export class UserController {
     }
   }
 
-  // @Get(':id')
-  // async findUserOne(@Param('id', ParseIntPipe) id: number) {
-  //   return await this.userService.findUserOne(id);
-  // }
-
   @Patch('update:id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,

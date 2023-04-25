@@ -80,6 +80,22 @@ export class ScheduleService {
     }
   }
 
+  async payOften() {
+    try {
+      const payOften = this.scheduleRepository
+        .createQueryBuilder('schedule')
+        .leftJoinAndSelect('schedule.user', 'user')
+        .select(['COUNT(schedule.user)', 'user.name'])
+        .where('schedule.dopay =:dopay', { dopay: 'Pay' })
+        .groupBy('user.id')
+        .orderBy({ 'user.id': 'ASC' })
+        .getRawMany();
+      return payOften;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async findOneSchedule(id: number) {
     try {
       const findOneSchedule = await this.scheduleRepository.findOneBy({
