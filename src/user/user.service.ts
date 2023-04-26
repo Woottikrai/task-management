@@ -110,11 +110,4 @@ export class UserService {
       throw error;
     }
   }
-
-  async countByPosition() {
-    try {
-    } catch (error) {
-      throw error;
-    }
-  }
 }

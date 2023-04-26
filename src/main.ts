@@ -18,5 +18,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
   app.enableCors();
   await app.listen(3001);
+  console.log('Start at ::', await app.getUrl());
 }
 bootstrap();

@@ -10,6 +10,7 @@ import { AuthGuard } from './authentication/auth.guard';
 import { CalendarModule } from './calendar/calendar.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { PositionModule } from './position/position.module';
+import { NotiEmailModule } from './noti-email/noti-email.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,6 +40,7 @@ import { PositionModule } from './position/position.module';
     CalendarModule,
     ScheduleModule,
     PositionModule,
+    NotiEmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
