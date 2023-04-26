@@ -6,8 +6,9 @@ import { User } from 'src/entities/user.entity';
 import { Schedule } from 'src/entities/schedule.entity';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([])],
+  exports: [NotiEmailService],
   controllers: [NotiEmailController],
   providers: [NotiEmailService],
-  exports: [],
 })
 export class NotiEmailModule {}

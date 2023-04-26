@@ -11,6 +11,7 @@ import { CalendarModule } from './calendar/calendar.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { PositionModule } from './position/position.module';
 import { NotiEmailModule } from './noti-email/noti-email.module';
+import { EventModule } from './event/event.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,6 +42,7 @@ import { NotiEmailModule } from './noti-email/noti-email.module';
     ScheduleModule,
     PositionModule,
     NotiEmailModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],

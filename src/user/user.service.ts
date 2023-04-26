@@ -7,12 +7,16 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { QueryByPosition, QueryUser } from './dto/query-user.dto';
+import { EventGateway } from 'src/event/event.gateway';
+import { NotiEmailService } from 'src/noti-email/noti-email.service';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+    private eventGateWay: EventGateway,
+  ) // private notiEmail: NotiEmailService,
+  {}
 
   async createUser(bodyUser: CreateUserDto) {
     try {
@@ -24,7 +28,10 @@ export class UserService {
         positionId: position,
         password,
       });
-      return await this.userRepository.save(newUser);
+      const test = await this.userRepository.save(newUser);
+
+      this.eventGateWay.emit('on-create', test);
+      return test;
     } catch (error) {
       throw error;
     }

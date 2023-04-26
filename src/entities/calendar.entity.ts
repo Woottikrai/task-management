@@ -17,7 +17,7 @@ export class Calendar {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'date', nullable: true })
   date: Date;
 
   @OneToMany(() => Schedule, (schedule) => schedule.calendar)

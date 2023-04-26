@@ -6,7 +6,10 @@ import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UserService } from 'src/user/user.service';
 import { CalendarService } from 'src/calendar/calendar.service';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
-
+import { EventGateway } from 'src/event/event.gateway';
+import { NotiEmailModule } from 'src/noti-email/noti-email.module';
+import { NotiEmailService } from 'src/noti-email/noti-email.service';
+import * as dayjs from 'dayjs';
 @Injectable()
 export class ScheduleService {
   constructor(
@@ -14,6 +17,8 @@ export class ScheduleService {
     private scheduleRepository: Repository<Schedule>,
     private userService: UserService,
     private calendarService: CalendarService,
+    private eventGateWay: EventGateway,
+    private notiService: NotiEmailService,
   ) {}
 
   async Create(body: CreateScheduleDto) {
@@ -26,6 +31,29 @@ export class ScheduleService {
         user: findUser,
         ...other,
       });
+      await this.notiService.sendMail(findUser?.email);
+      // this.eventGateWay.emit('on-create', body.user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //what is this
+  async checkDateAndSendEmail() {
+    try {
+      const now = dayjs().format('YYYY-MM-DD');
+
+      const findAll = await this.scheduleRepository
+        .createQueryBuilder('schedule')
+        .leftJoinAndSelect('schedule.user', 'user')
+        .leftJoinAndSelect('schedule.calendar', 'calendar')
+        .where('schedule.createdAt Between :startDate and :endDate', {
+          startDate: dayjs().startOf('week').toISOString(),
+          endDate: dayjs().endOf('week').toISOString(),
+        })
+        .getMany();
+
+      return;
     } catch (error) {
       throw error;
     }
