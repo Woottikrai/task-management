@@ -8,10 +8,11 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './authentication/auth.guard';
 import { CalendarModule } from './calendar/calendar.module';
-import { ScheduleModule } from './schedule/schedule.module';
 import { PositionModule } from './position/position.module';
 import { NotiEmailModule } from './noti-email/noti-email.module';
 import { EventModule } from './event/event.module';
+import { ScheduleModule as NestScheduleModule } from '@nestjs/schedule';
+import { ScheduleModule } from './schedule/schedule.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,6 +40,7 @@ import { EventModule } from './event/event.module';
     UserModule,
     AuthenticationModule,
     CalendarModule,
+    NestScheduleModule.forRoot(),
     ScheduleModule,
     PositionModule,
     NotiEmailModule,

@@ -18,7 +18,7 @@ export class NotiEmailService {
         to: `${email}`, //Email User
         from: 'phakphumninart@gmail.com',
         subject: 'ทำเวร',
-        text: 'วันนี้เป็นเวรของคุณ',
+        text: 'คุณทำเวรวันนี้',
       });
 
       return true;

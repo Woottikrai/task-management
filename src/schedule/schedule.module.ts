@@ -21,6 +21,6 @@ import { NotiEmailModule } from 'src/noti-email/noti-email.module';
   ],
   controllers: [ScheduleController],
   providers: [ScheduleService],
-  exports: [ScheduleModule],
+  exports: [ScheduleService],
 })
 export class ScheduleModule {}

@@ -7,9 +7,11 @@ import { UserService } from 'src/user/user.service';
 import { CalendarService } from 'src/calendar/calendar.service';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { EventGateway } from 'src/event/event.gateway';
-import { NotiEmailModule } from 'src/noti-email/noti-email.module';
 import { NotiEmailService } from 'src/noti-email/noti-email.service';
 import * as dayjs from 'dayjs';
+import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
+import { log } from 'console';
+
 @Injectable()
 export class ScheduleService {
   constructor(
@@ -31,29 +33,43 @@ export class ScheduleService {
         user: findUser,
         ...other,
       });
-      await this.notiService.sendMail(findUser?.email);
+      // await this.notiService.sendMail(findUser?.email, Calendar?.date);
       // this.eventGateWay.emit('on-create', body.user);
     } catch (error) {
       throw error;
     }
   }
 
-  //what is this
+  //cron not working is this
+  // @Cron(CronExpression.EVERY_10_SECONDS)
+  // @Timeout(100)
   async checkDateAndSendEmail() {
     try {
+      console.log('Hello Test');
       const now = dayjs().format('YYYY-MM-DD');
-
       const findAll = await this.scheduleRepository
         .createQueryBuilder('schedule')
         .leftJoinAndSelect('schedule.user', 'user')
         .leftJoinAndSelect('schedule.calendar', 'calendar')
-        .where('schedule.createdAt Between :startDate and :endDate', {
+        .where('schedule.createAt Between :startDate and :endDate', {
           startDate: dayjs().startOf('week').toISOString(),
           endDate: dayjs().endOf('week').toISOString(),
         })
         .getMany();
 
-      return;
+      if (findAll?.length > 0) {
+        for (const data of findAll) {
+          const user = data?.user;
+          const calendar = data?.calendar;
+
+          console.log(calendar.date);
+          if (now === String(calendar?.date)) {
+            console.log('Hello');
+            await this.notiService.sendMail(user?.email);
+          }
+        }
+      }
+      return true;
     } catch (error) {
       throw error;
     }

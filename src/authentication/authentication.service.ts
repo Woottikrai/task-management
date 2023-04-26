@@ -19,6 +19,7 @@ export class AuthenticationService {
   async siginin(email: string, pass: string) {
     const user = await this.userRepository.findOne({
       where: { email: email },
+      relations: ['position'],
     });
 
     const compare = await bcrypt.compare(pass, user?.password);
@@ -27,7 +28,11 @@ export class AuthenticationService {
       throw new UnauthorizedException();
     }
 
-    const payload = { email: user?.email, sub: user?.id };
+    const payload = {
+      email: user?.email,
+      sub: user?.id,
+      roles: user.position.position,
+    };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
