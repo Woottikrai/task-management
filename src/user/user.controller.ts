@@ -21,9 +21,9 @@ import { AuthGuard } from 'src/authentication/auth.guard';
 
 @ApiTags('user')
 @Controller('user')
-@UseGuards(AuthGuard, RolesGuard)
+// @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
-@Roles('Backend Developer')
+// @Roles('Backend Developer')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

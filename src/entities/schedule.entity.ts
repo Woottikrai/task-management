@@ -36,10 +36,10 @@ export class Schedule {
   @Exclude()
   calendarId: number;
 
-  @Column()
+  @Column({ nullable: true })
   dopay: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   howmuch: number;
 
   @CreateDateColumn()

@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from 'src/entities/schedule.entity';
-import { Repository } from 'typeorm';
-import { CreateScheduleDto } from './dto/create-schedule.dto';
+import { And, IsNull, Repository } from 'typeorm';
+import { CreateScheduleDto, Status } from './dto/create-schedule.dto';
 import { UserService } from 'src/user/user.service';
 import { CalendarService } from 'src/calendar/calendar.service';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
@@ -11,15 +11,16 @@ import { NotiEmailService } from 'src/noti-email/noti-email.service';
 import * as dayjs from 'dayjs';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 import { log } from 'console';
+import { Calendar } from 'src/entities/calendar.entity';
 
 @Injectable()
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
+
     private userService: UserService,
     private calendarService: CalendarService,
-    private eventGateWay: EventGateway,
     private notiService: NotiEmailService,
   ) {}
 
@@ -41,7 +42,7 @@ export class ScheduleService {
   }
 
   //cron not working is this
-  // @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   // @Timeout(100)
   async checkDateAndSendEmail() {
     try {
@@ -61,7 +62,6 @@ export class ScheduleService {
         for (const data of findAll) {
           const user = data?.user;
           const calendar = data?.calendar;
-
           console.log(calendar.date);
           if (now === String(calendar?.date)) {
             console.log('Hello');
@@ -160,8 +160,59 @@ export class ScheduleService {
     }
   }
 
+  // async random(date: string) {
+  //   try {
+  //     const user = await this.userService.findUserAll();
+  //     const c = await this.calendarService.getid();
+
+  //     if (date === String(c.date)) {
+  //       for (const u of user) {
+  //         // const randomIndex = Math.floor(Math.random() * user.length);
+  //         await this.scheduleRepository.save({
+  //           userId: u.id,
+  //           calendarId: c.id,
+  //         });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
   async random() {
     try {
+      const datt = dayjs().format('YYYY-MM-DD');
+      const wk = await this.calendarService.findThatWk();
+
+      const user = await this.userService.findUserAll();
+      const ids = user?.map((value) => value?.id);
+      if (wk.length > 0) {
+        for (const calendar of wk) {
+          for (let i = 0; i <= ids?.length; i++) {
+            const randomIndex = Math.floor(Math.random() * user?.length);
+            const randomNum = ids[randomIndex];
+
+            console.log(randomNum);
+
+            const findInDays = await this.scheduleRepository.findOne({
+              where: { userId: randomNum },
+              relations: ['calendar', 'user'],
+            });
+
+            // if (findInDays?.calendar?.id !== calendar?.id && findIn) {
+            //   const create = this.scheduleRepository.create({
+            //     userId: randomNum,
+            //     calendarId: calendar?.id,
+            //     howmuch: 50,
+            //     dopay: 'Pay',
+            //   });
+
+            //   await this.scheduleRepository.save(create);
+            // }
+          }
+        }
+      }
+      return wk;
     } catch (error) {
       throw error;
     }

@@ -115,7 +115,48 @@ export class CalendarService {
       throw error;
     }
   }
-
+  async getid() {
+    try {
+      const cid = await this.calendarRepository
+        .createQueryBuilder('calendar')
+        .select('calendar.id', 'calendar.id')
+        .where('calendar.date =:date', { date: 'date' })
+        .getOne();
+      return cid;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async findChdek() {
+    try {
+      const calendar = await this.calendarRepository
+        .createQueryBuilder('schedule')
+        .leftJoinAndSelect('schedule.calendar', 'calendar')
+        .where('schedule.date Between :startDate and :endDate', {
+          startDate: dayjs().startOf('week').toISOString(),
+          endDate: dayjs().endOf('week').toISOString(),
+        })
+        .getOne();
+      return calendar;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async findThatWk() {
+    try {
+      const findThatWk = await this.calendarRepository
+        .createQueryBuilder('calendar')
+        .select('calendar')
+        .where('calendar.createAt Between :startDate and :endDate', {
+          startDate: dayjs().startOf('week').toISOString(),
+          endDate: dayjs().endOf('week').toISOString(),
+        })
+        .getMany();
+      return findThatWk;
+    } catch (error) {
+      throw error;
+    }
+  }
   //   async createTask(calendarRepository: CreateCalendarDto) {
   //     try {
   //       const { userid, date } = calendarRepository;

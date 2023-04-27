@@ -13,8 +13,8 @@ import { NotiEmailModule } from 'src/noti-email/noti-email.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Schedule]),
-    UserModule,
     CalendarModule,
+    UserModule,
     EventGateway,
     EventModule,
     NotiEmailModule,

@@ -9,7 +9,7 @@ import { UserModule } from 'src/user/user.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Calendar]), UserModule],
   controllers: [CalendarController],
-  providers: [CalendarService],
+  providers: [CalendarService, CalendarModule],
   exports: [CalendarService, CalendarModule],
 })
 export class CalendarModule {}

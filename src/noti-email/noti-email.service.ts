@@ -9,14 +9,14 @@ export class NotiEmailService {
     host: 'smtp.gmail.com',
     port: '587',
     secure: false,
-    auth: { user: 'phakphumninart@gmail.com', pass: 'yoxwmueyqtkleoiw' },
+    auth: { user: 'woottikraij2@gmail.com', pass: 'lwzynwcqwnmdmmvp' },
   });
 
   async sendMail(email: string) {
     try {
       await this.transport.sendMail({
         to: `${email}`, //Email User
-        from: 'phakphumninart@gmail.com',
+        from: 'woottikraij2@gmail.com',
         subject: 'ทำเวร',
         text: 'คุณทำเวรวันนี้',
       });
