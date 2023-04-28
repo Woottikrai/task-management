@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -29,16 +30,25 @@ export class CalendarController {
     return await this.calendarService.findAll();
   }
 
-  @Get('findOne:id')
+  @Get('findOne/:id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    return await this.calendarService.findOne(id);
+    return await this.calendarService.findCalendarOne(id);
   }
 
-  @Patch('update:id')
+  @Patch('update/:id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() UpdateCalendarDto: UpdateCalendarDto,
   ) {
     return await this.calendarService.updateCalendar(id, UpdateCalendarDto);
+  }
+
+  @Delete('delete/:id')
+  async deleteCalendar(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.calendarService.deleteCalendar(id);
+    } catch (error) {
+      throw error;
+    }
   }
 }

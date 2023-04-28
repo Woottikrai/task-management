@@ -22,11 +22,17 @@ export class CalendarService {
   //create onedate
   async createCalendar(body: CreateCalendarDto) {
     try {
+      const findCalendar = await this.calendarRepository
+        .createQueryBuilder('calendar')
+        .select('calendar.date')
+        .getOne();
       for (const date of body.date) {
-        await this.calendarRepository.save({
-          ...this.calendarRepository,
-          date: dayjs(date).format('YYYY-MM-DD'),
-        });
+        if (!findCalendar) {
+          await this.calendarRepository.save({
+            ...this.calendarRepository,
+            date: dayjs(date).format('YYYY-MM-DD'),
+          });
+        }
       }
     } catch (error) {
       throw error;
@@ -76,7 +82,7 @@ export class CalendarService {
   }
   // ---------------------------------------------------------------------------------------
 
-  async findOne(id: number) {
+  async findCalendarOne(id: number) {
     try {
       const findOne = await this.calendarRepository.findOneBy({ id: id });
       return findOne;
@@ -157,19 +163,13 @@ export class CalendarService {
       throw error;
     }
   }
-  //   async createTask(calendarRepository: CreateCalendarDto) {
-  //     try {
-  //       const { userid, date } = calendarRepository;
-  //       for (const u of userid) {
-  //         const findUser = await this.userService.findUserOne(u);
-  //         console.log(findUser);
-  //         const task = await this.calendarRepository.save({
-  //           user: findUser,
-  //           date: date,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       throw error;
-  //     }
-  //   }
+
+  async deleteCalendar(id: number) {
+    try {
+      const calendar = await this.calendarRepository.softDelete(id);
+      return calendar;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

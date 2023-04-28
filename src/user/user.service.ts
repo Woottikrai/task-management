@@ -14,9 +14,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private eventGateWay: EventGateway,
-  ) // private notiEmail: NotiEmailService,
-  {}
+    private eventGateWay: EventGateway, // private notiEmail: NotiEmailService,
+  ) {}
 
   async createUser(bodyUser: CreateUserDto) {
     try {

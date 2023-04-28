@@ -10,7 +10,7 @@ import { EventGateway } from 'src/event/event.gateway';
 import { NotiEmailService } from 'src/noti-email/noti-email.service';
 import * as dayjs from 'dayjs';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
-import { log } from 'console';
+import { Console, log } from 'console';
 import { Calendar } from 'src/entities/calendar.entity';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class ScheduleService {
     try {
       const { user, calendar, ...other } = body;
       const findUser = await this.userService.findUserOne(user);
-      const Calendar = await this.calendarService.findOne(calendar);
+      const Calendar = await this.calendarService.findCalendarOne(calendar);
       await this.scheduleRepository.save({
         calendar: Calendar,
         user: findUser,
@@ -160,55 +160,34 @@ export class ScheduleService {
     }
   }
 
-  // async random(date: string) {
-  //   try {
-  //     const user = await this.userService.findUserAll();
-  //     const c = await this.calendarService.getid();
-
-  //     if (date === String(c.date)) {
-  //       for (const u of user) {
-  //         // const randomIndex = Math.floor(Math.random() * user.length);
-  //         await this.scheduleRepository.save({
-  //           userId: u.id,
-  //           calendarId: c.id,
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
   async random() {
     try {
       const datt = dayjs().format('YYYY-MM-DD');
       const wk = await this.calendarService.findThatWk();
-
       const user = await this.userService.findUserAll();
+      const round = Math.ceil(user?.length / wk?.length);
+      console.log(user.length);
       const ids = user?.map((value) => value?.id);
       if (wk.length > 0) {
+        console.log(user.length);
         for (const calendar of wk) {
-          for (let i = 0; i <= ids?.length; i++) {
-            const randomIndex = Math.floor(Math.random() * user?.length);
-            const randomNum = ids[randomIndex];
-
-            console.log(randomNum);
-
+          for (let i = 1; i <= round; i++) {
+            const randomIndex = Math.floor(Math.random() * ids.length);
+            const randomNum = ids.splice(randomIndex, 1)[0];
             const findInDays = await this.scheduleRepository.findOne({
               where: { userId: randomNum },
               relations: ['calendar', 'user'],
             });
+            if (findInDays?.calendar?.id !== calendar?.id && ids?.length > 0) {
+              const create = this.scheduleRepository.create({
+                userId: randomNum,
+                calendarId: calendar?.id,
+                howmuch: 0,
+                dopay: 'Do',
+              });
 
-            // if (findInDays?.calendar?.id !== calendar?.id && findIn) {
-            //   const create = this.scheduleRepository.create({
-            //     userId: randomNum,
-            //     calendarId: calendar?.id,
-            //     howmuch: 50,
-            //     dopay: 'Pay',
-            //   });
-
-            //   await this.scheduleRepository.save(create);
-            // }
+              await this.scheduleRepository.save(create);
+            }
           }
         }
       }
