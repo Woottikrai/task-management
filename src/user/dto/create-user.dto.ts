@@ -16,13 +16,4 @@ export class CreateUserDto {
 
   @ApiProperty()
   password: string;
-
-  @ApiProperty()
-  img: string;
-
-  @ApiProperty()
-  tel: string;
-
-  @ApiProperty()
-  position: number;
 }

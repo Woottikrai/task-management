@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { QueryByPosition, QueryUser } from './dto/query-user.dto';
 import { EventGateway } from 'src/event/event.gateway';
 import { NotiEmailService } from 'src/noti-email/noti-email.service';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 @Injectable()
 export class UserService {
   constructor(
@@ -19,24 +20,32 @@ export class UserService {
 
   async createUser(bodyUser: CreateUserDto) {
     try {
-      const { position, ...other } = bodyUser;
-      const password = await this.hashPassWord(bodyUser.password);
+      const { name, email, password } = bodyUser;
+      const hashpassword = await this.hashPassWord(bodyUser.password);
       console.log(password);
-      const newUser = this.userRepository.create({
-        ...other,
-        positionId: position,
-        password,
-      });
-      const test = await this.userRepository.save(newUser);
 
-      this.eventGateWay.emit('on-create', test);
-      return test;
+      const findEmail = await this.userRepository
+        .createQueryBuilder('user')
+        .where('user.email :=email', { email: bodyUser.email })
+        .getOne();
+      if (!findEmail) {
+        const newUser = this.userRepository.create({
+          name: name,
+          email: email,
+          password: hashpassword,
+        });
+        const test = await this.userRepository.save(newUser);
+      } else {
+        throw { message: 'Email user alr' };
+      }
+      // this.eventGateWay.emit('on-create', test);
+      // return test;
     } catch (error) {
-      throw error;
+      throw ExceptionsHandler;
     }
   }
 
-  async findUserAll() {
+  async findUserAll(): Promise<User[]> {
     try {
       const findUserAll = await this.userRepository.find({
         relations: ['schedule', 'schedule.user', 'position', 'position.user'],
@@ -59,11 +68,11 @@ export class UserService {
   async updateUser(id: number, bodyUser: UpdateUserDto) {
     try {
       const { position, ...other } = bodyUser;
-      const updateHash = await this.hashPassWord(bodyUser.password);
+      // const updateHash = await this.hashPassWord(bodyUser.password);
       const updateUser = await this.userRepository.update(id, {
         ...other,
         positionId: position,
-        password: updateHash,
+        // password: updateHash,
       });
       return updateUser;
     } catch (error) {

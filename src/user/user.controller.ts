@@ -22,8 +22,9 @@ import { AuthGuard } from 'src/authentication/auth.guard';
 @ApiTags('user')
 @Controller('user')
 // @UseGuards(AuthGuard, RolesGuard)
-@ApiBearerAuth()
+// @ApiBearerAuth()
 // @Roles('Backend Developer')
+@Roles('Project Manager')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -32,16 +33,19 @@ export class UserController {
     return await this.userService.createUser(createUserDto);
   }
 
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('getAll')
   async findUserAll() {
     return await this.userService.findUserAll();
   }
 
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('search')
   async query(@Query() body: QueryUser) {
     return await this.userService.queryUser(body);
   }
 
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('query-by-position')
   async queryByPosition(@Query() filter: QueryByPosition) {
     try {
@@ -63,6 +67,7 @@ export class UserController {
     return await this.userService.updateUser(id, updateUser);
   }
 
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Delete('remove:id')
   async deleteUser(@Param('id') id: number) {
     return await this.userService.removeUser(id);

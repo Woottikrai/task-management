@@ -5,11 +5,11 @@ export class UpdateUserDto {
   @ApiProperty()
   name?: string;
 
-  @ApiProperty()
-  email?: string;
+  // @ApiProperty()
+  // email?: string;
 
-  @ApiProperty()
-  password?: string;
+  // @ApiProperty()
+  // password?: string;
 
   @ApiProperty()
   img?: string;

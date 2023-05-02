@@ -7,16 +7,23 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   CreateCalendarDto,
   UpdateCalendarDto,
 } from 'src/calendar/dto/calendar.dto';
+import { RolesGuard } from 'src/authentication/guard/role.guard';
+import { Roles } from 'src/authentication/decorator/roles.decorator';
+import { AuthGuard } from 'src/authentication/auth.guard';
 
 @ApiTags('calendar')
 @Controller('calendar')
+// @UseGuards(AuthGuard, RolesGuard)
+// @ApiBearerAuth()
+@Roles('Project Manager')
 export class CalendarController {
   constructor(private readonly calendarService: CalendarService) {}
 
@@ -24,12 +31,12 @@ export class CalendarController {
   async create(@Body() createDto: CreateCalendarDto) {
     return await this.calendarService.createCalendar(createDto);
   }
-
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('findAll')
   async findAll() {
     return await this.calendarService.findAll();
   }
-
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('findOne/:id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.calendarService.findCalendarOne(id);

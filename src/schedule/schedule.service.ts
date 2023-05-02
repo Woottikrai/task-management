@@ -12,13 +12,13 @@ import * as dayjs from 'dayjs';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 import { Console, log } from 'console';
 import { Calendar } from 'src/entities/calendar.entity';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
-
     private userService: UserService,
     private calendarService: CalendarService,
     private notiService: NotiEmailService,
@@ -37,7 +37,7 @@ export class ScheduleService {
       // await this.notiService.sendMail(findUser?.email, Calendar?.date);
       // this.eventGateWay.emit('on-create', body.user);
     } catch (error) {
-      throw error;
+      throw ExceptionsHandler;
     }
   }
 
@@ -132,7 +132,7 @@ export class ScheduleService {
         .select(['COUNT(schedule.user)', 'user.name'])
         .where('schedule.dopay =:dopay', { dopay: 'Pay' })
         .groupBy('user.id')
-        .orderBy({ 'user.id': 'ASC' })
+        .orderBy({ 'user.id': 'ASC' || 'DESC' })
         .getRawMany();
       return payOften;
     } catch (error) {
@@ -162,22 +162,22 @@ export class ScheduleService {
 
   async random() {
     try {
-      const datt = dayjs().format('YYYY-MM-DD');
       const wk = await this.calendarService.findThatWk();
       const user = await this.userService.findUserAll();
       const round = Math.ceil(user?.length / wk?.length);
-      console.log(user.length);
       const ids = user?.map((value) => value?.id);
+
       if (wk.length > 0) {
-        console.log(user.length);
         for (const calendar of wk) {
           for (let i = 1; i <= round; i++) {
             const randomIndex = Math.floor(Math.random() * ids.length);
             const randomNum = ids.splice(randomIndex, 1)[0];
+
             const findInDays = await this.scheduleRepository.findOne({
               where: { userId: randomNum },
               relations: ['calendar', 'user'],
             });
+
             if (findInDays?.calendar?.id !== calendar?.id && ids?.length > 0) {
               const create = this.scheduleRepository.create({
                 userId: randomNum,

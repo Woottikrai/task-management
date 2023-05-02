@@ -7,14 +7,21 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { PositionService } from './position.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
+import { AuthGuard } from 'src/authentication/auth.guard';
+import { RolesGuard } from 'src/authentication/guard/role.guard';
+import { Roles } from 'src/authentication/decorator/roles.decorator';
 
 @ApiTags('Position')
 @Controller('position')
+// @UseGuards(AuthGuard, RolesGuard)
+// @ApiBearerAuth()
+@Roles('Project Manager')
 export class PositionController {
   constructor(private readonly positionService: PositionService) {}
 
@@ -22,17 +29,17 @@ export class PositionController {
   async createPosition(@Body() body: CreatePositionDto) {
     return await this.positionService.createPosition(body);
   }
-
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('findAll')
   async findAllPosition() {
     return await this.positionService.findAllPosition();
   }
-
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('findOne:id')
   async findOnePosition(@Param('id', ParseIntPipe) id: number) {
     return await this.positionService.findOnePosition(id);
   }
-
+  @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Patch('update:id')
   async updatePosition(
     @Param('id', ParseIntPipe) id: number,
