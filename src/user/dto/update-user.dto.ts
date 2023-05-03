@@ -1,15 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from './create-user.dto';
-import { IsIn } from 'class-validator';
 export class UpdateUserDto {
   @ApiProperty()
   name?: string;
 
-  // @ApiProperty()
-  // email?: string;
-
-  // @ApiProperty()
-  // password?: string;
+  @ApiProperty()
+  email?: string;
 
   @ApiProperty()
   img?: string;
@@ -19,4 +14,9 @@ export class UpdateUserDto {
 
   @ApiProperty()
   position?: number;
+}
+
+export class UpdatePasswordDto {
+  @ApiProperty()
+  password: string;
 }

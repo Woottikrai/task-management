@@ -24,7 +24,7 @@ export class CalendarService {
     try {
       const findCalendar = await this.calendarRepository
         .createQueryBuilder('calendar')
-        .select('calendar.date')
+        .where('calendar.date =:date', { date: body.date })
         .getOne();
       for (const date of body.date) {
         if (!findCalendar) {
@@ -111,16 +111,6 @@ export class CalendarService {
     }
   }
 
-  async removeCalendar(id: number) {
-    try {
-      const deleteCalendar = await this.calendarRepository.softRemove({
-        id: id,
-      });
-      return deleteCalendar;
-    } catch (error) {
-      throw error;
-    }
-  }
   async getid() {
     try {
       const cid = await this.calendarRepository
@@ -133,6 +123,7 @@ export class CalendarService {
       throw error;
     }
   }
+
   async findChdek() {
     try {
       const calendar = await this.calendarRepository

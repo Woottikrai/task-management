@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { promises } from 'dns';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto, UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -10,6 +10,7 @@ import { QueryByPosition, QueryUser } from './dto/query-user.dto';
 import { EventGateway } from 'src/event/event.gateway';
 import { NotiEmailService } from 'src/noti-email/noti-email.service';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -18,30 +19,23 @@ export class UserService {
     private eventGateWay: EventGateway, // private notiEmail: NotiEmailService,
   ) {}
 
-  async createUser(bodyUser: CreateUserDto) {
+  async createUser(bodyUser: CreateUserDto): Promise<User> {
     try {
-      const { name, email, password } = bodyUser;
+      const { name, email, password, img, tel, position } = bodyUser;
       const hashpassword = await this.hashPassWord(bodyUser.password);
       console.log(password);
-
-      const findEmail = await this.userRepository
-        .createQueryBuilder('user')
-        .where('user.email :=email', { email: bodyUser.email })
-        .getOne();
-      if (!findEmail) {
-        const newUser = this.userRepository.create({
-          name: name,
-          email: email,
-          password: hashpassword,
-        });
-        const test = await this.userRepository.save(newUser);
-      } else {
-        throw { message: 'Email user alr' };
-      }
-      // this.eventGateWay.emit('on-create', test);
-      // return test;
+      const newUser = this.userRepository.create({
+        name: name,
+        email: email,
+        password: hashpassword,
+        img: img,
+        tel: tel,
+        positionId: position,
+      });
+      const data = await this.userRepository.save(newUser);
+      return data;
     } catch (error) {
-      throw ExceptionsHandler;
+      throw error;
     }
   }
 
@@ -67,14 +61,28 @@ export class UserService {
 
   async updateUser(id: number, bodyUser: UpdateUserDto) {
     try {
-      const { position, ...other } = bodyUser;
-      // const updateHash = await this.hashPassWord(bodyUser.password);
+      const { name, email, img, tel, position } = bodyUser;
       const updateUser = await this.userRepository.update(id, {
-        ...other,
+        name: name,
+        email: email,
+        img: img,
+        tel: tel,
         positionId: position,
-        // password: updateHash,
       });
       return updateUser;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updatePassword(id: number, body: UpdatePasswordDto) {
+    try {
+      const { password } = body;
+      const updateHash = await this.hashPassWord(password);
+      const updatePassword = await this.userRepository.update(id, {
+        password: updateHash,
+      });
+      return updatePassword;
     } catch (error) {
       throw error;
     }

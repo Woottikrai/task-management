@@ -34,7 +34,7 @@ export class AuthenticationService {
       roles: user.position.position,
     };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      accessToken: await this.jwtService.signAsync(payload),
     };
   }
 

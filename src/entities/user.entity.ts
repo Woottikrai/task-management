@@ -27,20 +27,20 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   img: string;
 
-  @Column()
+  @Column({ nullable: true })
   tel: string;
 
-  @ManyToOne(() => Position, (position) => position.user)
+  @ManyToOne(() => Position, (position) => position.user, { nullable: true })
   position: Position;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   positionId: number;
 
-  @OneToMany(() => Schedule, (schedule) => schedule.user)
+  @OneToMany(() => Schedule, (schedule) => schedule.user, { nullable: true })
   schedule: Schedule[];
 
   @CreateDateColumn()

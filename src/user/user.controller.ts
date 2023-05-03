@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UpdateUserDto } from 'src/user/dto/update-user.dto';
+import { UpdatePasswordDto, UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { QueryByPosition, QueryUser } from './dto/query-user.dto';
 import { RolesGuard } from 'src/authentication/guard/role.guard';
@@ -59,7 +59,7 @@ export class UserController {
     }
   }
 
-  @Patch('update:id')
+  @Patch('update/:id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUser: UpdateUserDto,
@@ -67,8 +67,20 @@ export class UserController {
     return await this.userService.updateUser(id, updateUser);
   }
 
+  @Patch('update-password/:id')
+  async updatePassword(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdatePasswordDto,
+  ) {
+    try {
+      return await this.userService.updatePassword(id, body);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Roles('Backend Developer', 'Frontend Developer', 'Tester')
-  @Delete('remove:id')
+  @Delete('remove/:id')
   async deleteUser(@Param('id') id: number) {
     return await this.userService.removeUser(id);
   }
