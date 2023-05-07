@@ -11,6 +11,7 @@ import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import * as dayjs from 'dayjs';
+import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
 @Injectable()
 export class CalendarService {
   constructor(
@@ -52,29 +53,41 @@ export class CalendarService {
   }
 
   // generate date--------------------------------------------------------------------------------
+  // @Cron(CronExpression.EVERY_WEEK)
+  @Timeout(100) //test
   async createDates() {
     try {
-      let isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
-      dayjs.extend(isSameOrBefore);
-      const startDate = dayjs().startOf('week').add(1, 'day'); // Monday of current week
-      const endDate = dayjs().startOf('week').add(5, 'day'); // Friday of current week '2023-04-17'
-      const daysOfWeek = [];
+      const findThatWk = await this.calendarRepository
+        .createQueryBuilder('calendar')
+        .select('calendar')
+        .where('calendar.createAt Between :startDate and :endDate', {
+          startDate: dayjs().startOf('week').toISOString(),
+          endDate: dayjs().endOf('week').toISOString(),
+        })
+        .getOne();
+      if (!findThatWk) {
+        let isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
+        dayjs.extend(isSameOrBefore);
+        const startDate = dayjs().startOf('week').add(1, 'day'); // Monday of current week
+        const endDate = dayjs().startOf('week').add(5, 'day'); // Friday of current week '2023-04-17'
+        const daysOfWeek = [];
 
-      for (
-        let date = startDate;
-        date.isSameOrBefore(endDate);
-        date = date.add(1, 'day')
-      ) {
-        daysOfWeek.push({
-          date: date.format('YYYY-MM-DD'),
-        });
-      }
+        for (
+          let date = startDate;
+          date.isSameOrBefore(endDate);
+          date = date.add(1, 'day')
+        ) {
+          daysOfWeek.push({
+            date: date.format('YYYY-MM-DD'),
+          });
+        }
 
-      for (let d of daysOfWeek) {
-        await this.calendarRepository.save({
-          ...this.calendarRepository,
-          date: dayjs(d.date).format('YYYY-MM-DD'),
-        });
+        for (let d of daysOfWeek) {
+          await this.calendarRepository.save({
+            ...this.calendarRepository,
+            date: dayjs(d.date).format('YYYY-MM-DD'),
+          });
+        }
       }
     } catch (error) {
       throw error;
@@ -139,6 +152,7 @@ export class CalendarService {
       throw error;
     }
   }
+
   async findThatWk() {
     try {
       const findThatWk = await this.calendarRepository

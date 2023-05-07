@@ -42,7 +42,7 @@ export class ScheduleService {
   }
 
   //cron not working is this
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  // @Cron(CronExpression.EVERY_DAY_AT_1AM)
   // @Timeout(100)
   async checkDateAndSendEmail() {
     try {
