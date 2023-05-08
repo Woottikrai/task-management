@@ -8,10 +8,10 @@ export enum Status {
 
 export class CreateScheduleDto {
   @ApiProperty()
-  calendar: number;
+  calendar: string;
 
-  @ApiProperty()
-  user: number;
+  @ApiProperty({ type: [Number], example: [1, 2, 3] })
+  user: number[];
 
   @ApiProperty()
   @IsIn([Status.Do, Status.Pay])

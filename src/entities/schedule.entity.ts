@@ -22,14 +22,14 @@ export class Schedule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.schedule, { cascade: true })
+  @ManyToOne(() => User, (user) => user.schedule)
   user: User;
 
   @Column()
   @Exclude()
   userId: number;
 
-  @ManyToOne(() => Calendar, (calendar) => calendar.schedule, { cascade: true })
+  @ManyToOne(() => Calendar, (calendar) => calendar.schedule)
   calendar: Calendar;
 
   @Column()

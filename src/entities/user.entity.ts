@@ -33,14 +33,19 @@ export class User {
   @Column({ nullable: true })
   tel: string;
 
-  @ManyToOne(() => Position, (position) => position.user, { nullable: true })
+  @ManyToOne(() => Position, (position) => position.user, {
+    nullable: true,
+  })
   position: Position;
 
   @Column({ nullable: true })
   @Exclude()
   positionId: number;
 
-  @OneToMany(() => Schedule, (schedule) => schedule.user, { nullable: true })
+  @OneToMany(() => Schedule, (schedule) => schedule.user, {
+    nullable: true,
+    cascade: true,
+  })
   schedule: Schedule[];
 
   @CreateDateColumn()

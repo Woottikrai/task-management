@@ -59,7 +59,7 @@ export class UserController {
     }
   }
 
-  @Get('getOne')
+  @Get('getOne/:id')
   async getUserOne(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.userService.findUserOne(id);

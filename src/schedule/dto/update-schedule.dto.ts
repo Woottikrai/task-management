@@ -4,7 +4,7 @@ import { IsIn } from 'class-validator';
 import { Status } from './create-schedule.dto';
 export class UpdateScheduleDto {
   @ApiProperty()
-  calendar: number;
+  calendar: string;
 
   @ApiProperty()
   user: number;

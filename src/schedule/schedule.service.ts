@@ -11,8 +11,6 @@ import { NotiEmailService } from 'src/noti-email/noti-email.service';
 import * as dayjs from 'dayjs';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 import { Console, log } from 'console';
-import { Calendar } from 'src/entities/calendar.entity';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class ScheduleService {
@@ -26,18 +24,45 @@ export class ScheduleService {
 
   async Create(body: CreateScheduleDto) {
     try {
-      const { user, calendar, ...other } = body;
-      const findUser = await this.userService.findUserOne(user);
-      const Calendar = await this.calendarService.findCalendarOne(calendar);
-      await this.scheduleRepository.save({
-        calendar: Calendar,
-        user: findUser,
-        ...other,
+      const { user, calendar, dopay, howmuch } = body;
+      await this.calendarService.createCalendar({
+        date: calendar,
       });
+      const findCalendar = await this.calendarService.findDate(calendar);
+
+      for (const u of user) {
+        const findUser = await this.userService.findUserOne(u);
+        const findcheck = await this.scheduleRepository.findOne({
+          where: { user: findUser, calendar: findCalendar },
+        });
+        console.log(findcheck);
+        if (!findcheck) {
+          await this.scheduleRepository.save({
+            calendar: findCalendar,
+            user: findUser,
+            dopay: dopay,
+            howmuch: howmuch,
+          });
+        }
+      }
       // await this.notiService.sendMail(findUser?.email, Calendar?.date);
       // this.eventGateWay.emit('on-create', body.user);
     } catch (error) {
-      throw ExceptionsHandler;
+      throw error;
+    }
+  }
+
+  async findCheck() {
+    try {
+      const findCheck = this.scheduleRepository
+        .createQueryBuilder('schedule')
+        .leftJoinAndSelect('schedule.user', 'user')
+        .leftJoinAndSelect('schedule.calendar', 'calendar')
+        .where('schedule.calendarId =:calendarId', { calendarId: 'calendar' })
+        .getOne();
+      return findCheck;
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -79,22 +104,27 @@ export class ScheduleService {
     try {
       console.log(id);
       const { user, calendar, doPay, howMuch } = body;
+      const findUser = await this.userService.findUserOne(user);
+      const findCalendar = await this.calendarService.findDate(calendar);
       const schedule = await this.scheduleRepository.findOne({
         where: { id: id },
       });
-
+      const findcCalendar = await this.calendarService.findDate(calendar);
       if (!schedule) {
         throw new BadRequestException('schedule not found');
       }
-
-      const merge = this.scheduleRepository.merge(schedule, {
-        dopay: doPay,
-        howmuch: howMuch,
-        calendarId: calendar,
-        userId: user,
+      const findcheck = await this.scheduleRepository.findOne({
+        where: { user: findUser, calendar: findCalendar },
       });
-
-      return await this.scheduleRepository.save(merge);
+      if (!findcheck) {
+        const merge = this.scheduleRepository.merge(schedule, {
+          dopay: doPay,
+          howmuch: howMuch,
+          calendar: findcCalendar,
+          userId: user,
+        });
+        return await this.scheduleRepository.save(merge);
+      }
     } catch (error) {
       throw error;
     }
@@ -196,12 +226,4 @@ export class ScheduleService {
       throw error;
     }
   }
-
-  // const findCalendar = await getConnection()
-  //   .getRepository(Calendar)
-  //   .findOne({ where: { id: body?.calendar } });
-
-  // const findUser = await getConnection()
-  //   .getRepository(User)
-  //   .findOne({ where: { id: body?.user } });
 }

@@ -20,7 +20,7 @@ export class Calendar {
   @Column({ type: 'date', nullable: true })
   date: Date;
 
-  @OneToMany(() => Schedule, (schedule) => schedule.calendar)
+  @OneToMany(() => Schedule, (schedule) => schedule.calendar, { cascade: true })
   schedule: Schedule[];
 
   @CreateDateColumn()

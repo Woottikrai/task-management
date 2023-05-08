@@ -27,13 +27,10 @@ export class CalendarService {
         .createQueryBuilder('calendar')
         .where('calendar.date =:date', { date: body.date })
         .getOne();
-      for (const date of body.date) {
-        if (!findCalendar) {
-          await this.calendarRepository.save({
-            ...this.calendarRepository,
-            date: dayjs(date).format('YYYY-MM-DD'),
-          });
-        }
+      if (!findCalendar) {
+        await this.calendarRepository.save({
+          date: dayjs(body.date).format('YYYY-MM-DD'),
+        });
       }
     } catch (error) {
       throw error;
@@ -46,54 +43,12 @@ export class CalendarService {
         .createQueryBuilder('calendar')
         .where('calendar.date =:date ', { date: date })
         .getOne();
+      console.log(find);
       return await find;
     } catch (error) {
       throw error;
     }
   }
-
-  // generate date--------------------------------------------------------------------------------
-  // @Cron(CronExpression.EVERY_WEEK)
-  @Timeout(100) //test
-  async createDates() {
-    try {
-      const findThatWk = await this.calendarRepository
-        .createQueryBuilder('calendar')
-        .select('calendar')
-        .where('calendar.createAt Between :startDate and :endDate', {
-          startDate: dayjs().startOf('week').toISOString(),
-          endDate: dayjs().endOf('week').toISOString(),
-        })
-        .getOne();
-      if (!findThatWk) {
-        let isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
-        dayjs.extend(isSameOrBefore);
-        const startDate = dayjs().startOf('week').add(1, 'day'); // Monday of current week
-        const endDate = dayjs().startOf('week').add(5, 'day'); // Friday of current week '2023-04-17'
-        const daysOfWeek = [];
-
-        for (
-          let date = startDate;
-          date.isSameOrBefore(endDate);
-          date = date.add(1, 'day')
-        ) {
-          daysOfWeek.push({
-            date: date.format('YYYY-MM-DD'),
-          });
-        }
-
-        for (let d of daysOfWeek) {
-          await this.calendarRepository.save({
-            ...this.calendarRepository,
-            date: dayjs(d.date).format('YYYY-MM-DD'),
-          });
-        }
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-  // ---------------------------------------------------------------------------------------
 
   async findCalendarOne(id: number) {
     try {
@@ -110,6 +65,22 @@ export class CalendarService {
         relations: ['schedule', 'schedule.calendar'],
       });
       return findCalendarAll;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findCalendarMohth() {
+    try {
+      const findCalendarMohth = this.calendarRepository
+        .createQueryBuilder('calendar')
+        .leftJoinAndSelect('calendar.schedule', 'calendar')
+        .select('calendar')
+        .where('calendar.date Between :startDate and :endDate', {
+          startDate: dayjs().startOf('month').toISOString(),
+          endDate: dayjs().endOf('month').toISOString(),
+        });
+      return findCalendarMohth;
     } catch (error) {
       throw error;
     }
@@ -177,4 +148,47 @@ export class CalendarService {
       throw error;
     }
   }
+
+  // generate date--------------------------------------------------------------------------------
+  // @Cron(CronExpression.EVERY_WEEK)
+  // @Timeout(100) //test
+  // async createDates() {
+  //   try {
+  //     const findThatWk = await this.calendarRepository
+  //       .createQueryBuilder('calendar')
+  //       .select('calendar')
+  //       .where('calendar.createAt Between :startDate and :endDate', {
+  //         startDate: dayjs().startOf('week').toISOString(),
+  //         endDate: dayjs().endOf('week').toISOString(),
+  //       })
+  //       .getOne();
+  //     if (!findThatWk) {
+  //       let isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
+  //       dayjs.extend(isSameOrBefore);
+  //       const startDate = dayjs().startOf('week').add(1, 'day'); // Monday of current week
+  //       const endDate = dayjs().startOf('week').add(5, 'day'); // Friday of current week '2023-04-17'
+  //       const daysOfWeek = [];
+
+  //       for (
+  //         let date = startDate;
+  //         date.isSameOrBefore(endDate);
+  //         date = date.add(1, 'day')
+  //       ) {
+  //         daysOfWeek.push({
+  //           date: date.format('YYYY-MM-DD'),
+  //         });
+  //       }
+
+  //       for (let d of daysOfWeek) {
+  //         await this.calendarRepository.save({
+  //           ...this.calendarRepository,
+  //           date: dayjs(d.date).format('YYYY-MM-DD'),
+  //         });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+  // ---------------------------------------------------------------------------------------
 }

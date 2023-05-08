@@ -90,7 +90,11 @@ export class UserService {
 
   async removeUser(id: number) {
     try {
-      const userDelete = await this.userRepository.softDelete({ id: id });
+      const find = await this.userRepository.findOne({
+        where: { id: id },
+        relations: ['schedule'],
+      });
+      const userDelete = await this.userRepository.softDelete(find);
       return userDelete;
     } catch (error) {
       throw error;
