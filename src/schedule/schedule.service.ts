@@ -11,12 +11,16 @@ import { NotiEmailService } from 'src/noti-email/noti-email.service';
 import * as dayjs from 'dayjs';
 import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 import { Console, log } from 'console';
+import { filterUserSelect } from './dto/query.dto';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private userService: UserService,
     private calendarService: CalendarService,
     private notiService: NotiEmailService,
@@ -47,6 +51,36 @@ export class ScheduleService {
       }
       // await this.notiService.sendMail(findUser?.email, Calendar?.date);
       // this.eventGateWay.emit('on-create', body.user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async selectUser(filter: filterUserSelect) {
+    try {
+      const { date } = filter;
+      const findCalendar = await this.calendarService.findDate(date);
+
+      const selectUser = await this.scheduleRepository
+        .createQueryBuilder('schedule')
+        .leftJoinAndSelect('schedule.user', 'su')
+        .leftJoinAndSelect('schedule.calendar', 'sc')
+        .where('sc.id = :id', { id: findCalendar.id })
+        .getMany();
+
+      const u = selectUser.map((value) => {
+        return value.user.id;
+      });
+
+      if (u?.length === 0) {
+        u.push(0);
+      }
+
+      const check = await this.userRepository
+        .createQueryBuilder('user')
+        .where('user.id NOT IN (:...id)', { id: u })
+        .getMany();
+      return check;
     } catch (error) {
       throw error;
     }

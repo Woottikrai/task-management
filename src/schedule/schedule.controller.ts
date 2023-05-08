@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
@@ -16,6 +17,7 @@ import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { Roles } from 'src/authentication/decorator/roles.decorator';
 import { AuthGuard } from 'src/authentication/auth.guard';
 import { RolesGuard } from 'src/authentication/guard/role.guard';
+import { filterUserSelect } from './dto/query.dto';
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -45,6 +47,15 @@ export class ScheduleController {
     return await this.scheduleService.findSchedule();
   }
 
+  @Get('getOne/:id')
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return this.scheduleService.findOneSchedule(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('sumpay')
   async getSumPay() {
@@ -54,6 +65,15 @@ export class ScheduleController {
   @Get('payoften')
   async payoften() {
     return this.scheduleService.payOften();
+  }
+
+  @Get('select')
+  async selectUser(@Query() filter: filterUserSelect) {
+    try {
+      return await this.scheduleService.selectUser(filter);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Patch('update/:id')

@@ -9,10 +9,11 @@ import { CalendarModule } from 'src/calendar/calendar.module';
 import { EventGateway } from 'src/event/event.gateway';
 import { EventModule } from 'src/event/event.module';
 import { NotiEmailModule } from 'src/noti-email/noti-email.module';
+import { User } from 'src/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Schedule]),
+    TypeOrmModule.forFeature([Schedule, User]),
     CalendarModule,
     UserModule,
     EventGateway,
