@@ -45,7 +45,7 @@ export class UserService {
 
   async findUserAll(filter: FilterQueryUser) {
     try {
-      const { position, name } = filter;
+      const { position, name, pagination, getOffset, limit } = filter;
       const queryBuilder = this.userRepository
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.schedule', 'schedule')
@@ -61,6 +61,10 @@ export class UserService {
         queryBuilder.andWhere('user.name LIKE :name', {
           name: `%${name}%`,
         });
+      }
+
+      if (pagination) {
+        queryBuilder.skip(getOffset(filter)).take(limit);
       }
 
       return await queryBuilder.getMany();

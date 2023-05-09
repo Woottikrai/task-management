@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './authentication/auth.guard';
 import { CalendarModule } from './calendar/calendar.module';
 import { PositionModule } from './position/position.module';
 import { NotiEmailModule } from './noti-email/noti-email.module';
@@ -18,7 +14,6 @@ import { ScheduleModule } from './schedule/schedule.module';
     ConfigModule.forRoot({
       envFilePath: [`.env`],
     }),
-
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -46,7 +41,5 @@ import { ScheduleModule } from './schedule/schedule.module';
     NotiEmailModule,
     EventModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

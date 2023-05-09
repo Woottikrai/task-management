@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
+import { CommonFilter } from 'src/shared/common-filter';
 
 export class QueryUser {
   @ApiProperty()
@@ -13,7 +14,7 @@ export class QueryByPosition {
   position: number;
 }
 
-export class FilterQueryUser {
+export class FilterQueryUser extends CommonFilter {
   @ApiProperty()
   @IsOptional()
   name: string;
