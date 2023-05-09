@@ -6,6 +6,7 @@ import * as xl from 'excel4node';
 import { Response, query } from 'express';
 import { Schedule } from 'src/entities/schedule.entity';
 import * as dayjs from 'dayjs';
+import { ScheduleService } from 'src/schedule/schedule.service';
 @Injectable()
 export class ExportExcelService {
   constructor(
@@ -13,6 +14,7 @@ export class ExportExcelService {
     private userRepository: Repository<User>,
     @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
+    private scheduleservice: ScheduleService,
   ) {}
 
   async exportUser(res: Response) {
@@ -47,6 +49,7 @@ export class ExportExcelService {
 
   async exportSchedule(res: Response) {
     try {
+      const sumpay = await this.scheduleservice.sumPay();
       const scheduleData = await this.scheduleRepository
         .createQueryBuilder('schedule')
         .leftJoinAndSelect('schedule.user', 'su')
@@ -76,7 +79,10 @@ export class ExportExcelService {
         sheet.cell(_row, 4).string(`${u?.howmuch || '-'}`);
         _row++;
       }
-      ws.write('ExcelFile.xlsx', res);
+      console.log(sumpay);
+      sheet.cell(1, 7).string('เงินรวมที่เก็บได้');
+      sheet.cell(2, 7).string(`จ่ายเงินด้วยค้าบบบ${sumpay.sum}`);
+      ws.write('Schedule.xlsx', res);
     } catch (error) {
       throw error;
     }

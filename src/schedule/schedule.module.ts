@@ -22,6 +22,6 @@ import { User } from 'src/entities/user.entity';
   ],
   controllers: [ScheduleController],
   providers: [ScheduleService],
-  exports: [ScheduleService],
+  exports: [ScheduleService, ScheduleModule],
 })
 export class ScheduleModule {}

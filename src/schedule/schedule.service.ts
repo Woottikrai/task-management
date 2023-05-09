@@ -36,7 +36,7 @@ export class ScheduleService {
         const findcheck = await this.scheduleRepository.findOne({
           where: { user: findUser, calendar: findCalendar },
         });
-        console.log(findcheck);
+
         if (!findcheck) {
           await this.scheduleRepository.save({
             calendar: findCalendar,
