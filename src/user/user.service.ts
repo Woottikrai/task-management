@@ -67,7 +67,7 @@ export class UserService {
         queryBuilder.skip(getOffset(filter)).take(limit);
       }
 
-      return await queryBuilder.getMany();
+      return await queryBuilder.getManyAndCount();
     } catch (error) {
       throw error;
     }

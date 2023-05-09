@@ -40,7 +40,15 @@ export class UserController {
   @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('getAll')
   async findUserAll(@Query() filter: FilterQueryUser) {
-    return await this.userService.findUserAll(filter);
+    const { limit, page, getPageCount } = filter;
+    const [data, count] = await this.userService.findUserAll(filter);
+    return {
+      data: data,
+      count: count,
+      page: page,
+      limit: limit,
+      pageCount: getPageCount(limit, count),
+    };
   }
 
   @Roles('Backend Developer', 'Frontend Developer', 'Tester')
