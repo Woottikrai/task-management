@@ -22,7 +22,7 @@ export class Schedule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.schedule)
+  @ManyToOne(() => User, (user) => user.schedule, { onDelete: 'CASCADE' })
   user: User;
 
   @Column()

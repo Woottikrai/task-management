@@ -15,7 +15,11 @@ async function bootstrap() {
     .addBearerAuth({ in: 'header', type: 'http' })
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
   SwaggerModule.setup('api', app, document, {
     swaggerOptions: {
       persistAuthorization: true,

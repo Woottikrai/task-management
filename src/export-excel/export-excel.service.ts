@@ -33,10 +33,10 @@ export class ExportExcelService {
       }
 
       for (const u of user) {
-        sheet.cell(_row, 1).string(`${u.name}`);
-        sheet.cell(_row, 2).string(`${u.email}`);
-        sheet.cell(_row, 3).string(`${u.position.position}`);
-        sheet.cell(_row, 4).string(`${u.tel}`);
+        sheet.cell(_row, 1).string(`${u?.name || '-'}`);
+        sheet.cell(_row, 2).string(`${u?.email || '-'} `);
+        sheet.cell(_row, 3).string(`${u?.position?.position || '-'}`);
+        sheet.cell(_row, 4).string(`${u?.tel || '-'}`);
         _row++;
       }
       ws.write('ExcelFile.xlsx', res);
@@ -62,12 +62,18 @@ export class ExportExcelService {
 
       let _row = 2;
       for (const u of scheduleData) {
-        sheet.cell(_row, 1).string(`${u.user.name}`);
+        sheet.cell(_row, 1).string(`${u?.user?.name || '-'}`);
         sheet
           .cell(_row, 2)
-          .string(`${dayjs(u.calendar.date).format('YYYY-MM-DD')}`);
-        sheet.cell(_row, 3).string(`${u.dopay}`);
-        sheet.cell(_row, 4).string(`${u.howmuch}`);
+          .string(
+            `${
+              u?.calendar?.date
+                ? dayjs(u?.calendar?.date).format('YYYY-MM-DD')
+                : '-'
+            }`,
+          );
+        sheet.cell(_row, 3).string(`${u?.dopay || '-'}`);
+        sheet.cell(_row, 4).string(`${u?.howmuch || '-'}`);
         _row++;
       }
       ws.write('ExcelFile.xlsx', res);

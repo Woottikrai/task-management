@@ -45,7 +45,7 @@ export class UserService {
 
   async findUserAll(filter: FilterQueryUser) {
     try {
-      const { position, name, pagination, limit, page } = filter;
+      const { position, name, pagination, getOffset, limit } = filter;
 
       const queryBuilder = this.userRepository
         .createQueryBuilder('user')
@@ -65,7 +65,7 @@ export class UserService {
       }
 
       if (pagination) {
-        queryBuilder.skip((page - 1) * limit).take(limit);
+        queryBuilder.skip(getOffset(filter)).take(limit);
       }
 
       return await queryBuilder.getManyAndCount();
@@ -118,8 +118,7 @@ export class UserService {
         where: { id: id },
         relations: ['schedule'],
       });
-      const userDelete = await this.userRepository.softDelete(find);
-      return userDelete;
+      return await this.userRepository.softRemove(find);
     } catch (error) {
       throw error;
     }
