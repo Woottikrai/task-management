@@ -52,7 +52,7 @@ export class CalendarService {
 
   async findCalendarOne(id: number) {
     try {
-      const findOne = await this.calendarRepository.findOneBy({ id: id });
+      const findOne = await this.calendarRepository.findOne({ id: id });
       return findOne;
     } catch (error) {
       throw error;

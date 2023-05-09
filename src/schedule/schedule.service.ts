@@ -1,16 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from 'src/entities/schedule.entity';
-import { And, IsNull, Repository } from 'typeorm';
-import { CreateScheduleDto, Status } from './dto/create-schedule.dto';
+import { Repository } from 'typeorm';
+import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UserService } from 'src/user/user.service';
 import { CalendarService } from 'src/calendar/calendar.service';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
-import { EventGateway } from 'src/event/event.gateway';
 import { NotiEmailService } from 'src/noti-email/noti-email.service';
 import * as dayjs from 'dayjs';
-import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
-import { Console, log } from 'console';
 import { filterUserSelect } from './dto/query.dto';
 import { User } from 'src/entities/user.entity';
 
@@ -206,7 +203,7 @@ export class ScheduleService {
 
   async findOneSchedule(id: number) {
     try {
-      const findOneSchedule = await this.scheduleRepository.findOneBy({
+      const findOneSchedule = await this.scheduleRepository.findOne({
         id: id,
       });
       return findOneSchedule;

@@ -32,7 +32,7 @@ export class PositionService {
 
   async findOnePosition(id: number) {
     try {
-      const findOnePosition = await this.positionRepository.findOneBy({
+      const findOnePosition = await this.positionRepository.findOne({
         id: id,
       });
       return findOnePosition;

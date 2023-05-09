@@ -22,7 +22,7 @@ async function bootstrap() {
     },
   });
   app.enableCors();
-  await app.listen(3001);
+  await app.listen(3100);
   console.log('Start at ::', await app.getUrl());
 }
 bootstrap();

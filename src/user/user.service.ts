@@ -45,7 +45,8 @@ export class UserService {
 
   async findUserAll(filter: FilterQueryUser) {
     try {
-      const { position, name, pagination, getOffset, limit } = filter;
+      const { position, name, pagination, limit, page } = filter;
+
       const queryBuilder = this.userRepository
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.schedule', 'schedule')
@@ -64,7 +65,7 @@ export class UserService {
       }
 
       if (pagination) {
-        queryBuilder.skip(getOffset(filter)).take(limit);
+        queryBuilder.skip((page - 1) * limit).take(limit);
       }
 
       return await queryBuilder.getManyAndCount();
@@ -75,7 +76,7 @@ export class UserService {
 
   async findUserOne(id: number): Promise<User> {
     try {
-      const findUserOne = await this.userRepository.findOneBy({ id: id });
+      const findUserOne = await this.userRepository.findOne({ id: id });
       return findUserOne;
     } catch (error) {
       throw error;

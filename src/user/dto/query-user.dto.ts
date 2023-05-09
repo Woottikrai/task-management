@@ -15,11 +15,11 @@ export class QueryByPosition {
 }
 
 export class FilterQueryUser extends CommonFilter {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   position: number;
 }
