@@ -9,6 +9,8 @@ import { NotiEmailModule } from './noti-email/noti-email.module';
 import { EventModule } from './event/event.module';
 import { ScheduleModule as NestScheduleModule } from '@nestjs/schedule';
 import { ScheduleModule } from './schedule/schedule.module';
+import { ExportExcelModule } from './export-excel/export-excel.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -40,6 +42,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     PositionModule,
     NotiEmailModule,
     EventModule,
+    ExportExcelModule,
   ],
 })
 export class AppModule {}

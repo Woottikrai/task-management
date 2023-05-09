@@ -41,6 +41,7 @@
     "cron-schedule": "^4.0.0",
     "dayjs": "^1.11.7",
     "ejs": "^3.1.9",
+    "excel4node": "^1.8.2",
     "handlebars": "^4.7.7",
     "jsonwebtoken": "^9.0.0",
     "nodemailer": "^6.9.1",
