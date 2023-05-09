@@ -224,40 +224,40 @@ export class ScheduleService {
     }
   }
 
-  async random() {
-    try {
-      const wk = await this.calendarService.findThatWk();
-      const user = await this.userService.findUserAll();
-      const round = Math.ceil(user?.length / wk?.length);
-      const ids = user?.map((value) => value?.id);
+  // async random() {
+  //   try {
+  //     const wk = await this.calendarService.findThatWk();
+  //     const user = await this.userService.findUserAll();
+  //     const round = Math.ceil(user?.length / wk?.length);
+  //     const ids = user?.map((value) => value?.id);
 
-      if (wk.length > 0) {
-        for (const calendar of wk) {
-          for (let i = 1; i <= round; i++) {
-            const randomIndex = Math.floor(Math.random() * ids.length);
-            const randomNum = ids.splice(randomIndex, 1)[0];
+  //     if (wk.length > 0) {
+  //       for (const calendar of wk) {
+  //         for (let i = 1; i <= round; i++) {
+  //           const randomIndex = Math.floor(Math.random() * ids.length);
+  //           const randomNum = ids.splice(randomIndex, 1)[0];
 
-            const findInDays = await this.scheduleRepository.findOne({
-              where: { userId: randomNum },
-              relations: ['calendar', 'user'],
-            });
+  //           const findInDays = await this.scheduleRepository.findOne({
+  //             where: { userId: randomNum },
+  //             relations: ['calendar', 'user'],
+  //           });
 
-            if (findInDays?.calendar?.id !== calendar?.id && ids?.length > 0) {
-              const create = this.scheduleRepository.create({
-                userId: randomNum,
-                calendarId: calendar?.id,
-                howmuch: 0,
-                dopay: 'Do',
-              });
+  //           if (findInDays?.calendar?.id !== calendar?.id && ids?.length > 0) {
+  //             const create = this.scheduleRepository.create({
+  //               userId: randomNum,
+  //               calendarId: calendar?.id,
+  //               howmuch: 0,
+  //               dopay: 'Do',
+  //             });
 
-              await this.scheduleRepository.save(create);
-            }
-          }
-        }
-      }
-      return wk;
-    } catch (error) {
-      throw error;
-    }
-  }
+  //             await this.scheduleRepository.save(create);
+  //           }
+  //         }
+  //       }
+  //     }
+  //     return wk;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }

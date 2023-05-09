@@ -32,14 +32,14 @@ export class ScheduleController {
     return await this.scheduleService.Create(createSchedule);
   }
 
-  @Post('random')
-  async random() {
-    try {
-      return await this.scheduleService.random();
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @Post('random')
+  // async random() {
+  //   try {
+  //     return await this.scheduleService.random();
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('findAll')

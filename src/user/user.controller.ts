@@ -14,7 +14,11 @@ import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UpdatePasswordDto, UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { QueryByPosition, QueryUser } from './dto/query-user.dto';
+import {
+  FilterQueryUser,
+  QueryByPosition,
+  QueryUser,
+} from './dto/query-user.dto';
 import { RolesGuard } from 'src/authentication/guard/role.guard';
 import { Roles } from 'src/authentication/decorator/roles.decorator';
 import { AuthGuard } from 'src/authentication/auth.guard';
@@ -35,8 +39,8 @@ export class UserController {
 
   @Roles('Backend Developer', 'Frontend Developer', 'Tester')
   @Get('getAll')
-  async findUserAll() {
-    return await this.userService.findUserAll();
+  async findUserAll(@Query() filter: FilterQueryUser) {
+    return await this.userService.findUserAll(filter);
   }
 
   @Roles('Backend Developer', 'Frontend Developer', 'Tester')

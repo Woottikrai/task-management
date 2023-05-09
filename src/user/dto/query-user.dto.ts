@@ -12,3 +12,13 @@ export class QueryByPosition {
   @IsOptional()
   position: number;
 }
+
+export class FilterQueryUser {
+  @ApiProperty()
+  @IsOptional()
+  name: string;
+
+  @ApiProperty()
+  @IsOptional()
+  position: number;
+}

@@ -6,7 +6,11 @@ import { UpdatePasswordDto, UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { QueryByPosition, QueryUser } from './dto/query-user.dto';
+import {
+  FilterQueryUser,
+  QueryByPosition,
+  QueryUser,
+} from './dto/query-user.dto';
 import { EventGateway } from 'src/event/event.gateway';
 import { NotiEmailService } from 'src/noti-email/noti-email.service';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
@@ -39,12 +43,27 @@ export class UserService {
     }
   }
 
-  async findUserAll(): Promise<User[]> {
+  async findUserAll(filter: FilterQueryUser) {
     try {
-      const findUserAll = await this.userRepository.find({
-        relations: ['schedule', 'schedule.user', 'position', 'position.user'],
-      });
-      return findUserAll;
+      const { position, name } = filter;
+      const queryBuilder = this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.schedule', 'schedule')
+        .leftJoinAndSelect('user.position', 'position');
+
+      if (position) {
+        queryBuilder.andWhere('user.position = :position', {
+          position: position,
+        });
+      }
+
+      if (name) {
+        queryBuilder.andWhere('user.name LIKE :name', {
+          name: `%${name}%`,
+        });
+      }
+
+      return await queryBuilder.getMany();
     } catch (error) {
       throw error;
     }
