@@ -12,8 +12,6 @@ import {
   QueryUser,
 } from './dto/query-user.dto';
 import { EventGateway } from 'src/event/event.gateway';
-import { NotiEmailService } from 'src/noti-email/noti-email.service';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class UserService {
