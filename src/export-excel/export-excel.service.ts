@@ -66,7 +66,7 @@ export class ExportExcelService {
 
       const wh = ws.createStyle({
         font: {
-          color: 'FF0000', // สีตัวอักษรเป็นสีแดง
+          color: '000000', // สีตัวอักษรเป็นสีแดง
         },
         alignment: {
           shrinkToFit: true,
@@ -174,9 +174,10 @@ export class ExportExcelService {
 
       let cellStyle = ws.createStyle({
         font: {
-          color: 'FF0000', // สีตัวอักษรเป็นสีแดง
+          color: '000000', // สีตัวอักษรเป็นสีแดง
         },
         alignment: {
+          shrinkToFit: true,
           wrapText: true,
           horizontal: 'center',
           vertical: 'center',
@@ -204,8 +205,6 @@ export class ExportExcelService {
             color: '000000', // สีเส้นขอบเป็นสีดำ
           },
         },
-        width: 50, // กำหนดความกว้างของเซลให้เป็น 20
-        hight: 50,
       });
 
       const header = ['ชื่อ', 'วันที่ทำเวร', 'ทำหรือจ่าย', 'จำนวนเงินที่จ่าย'];
@@ -214,14 +213,16 @@ export class ExportExcelService {
           .cell(1, i + 1)
           .string(header[i])
           .style(cellStyle);
+        sheet.column(i + 1).setWidth(20);
       }
 
       let _row = 2;
+
       for (const u of scheduleData) {
         sheet
           .cell(_row, 1)
           .string(`${u?.user?.name || '-'}`)
-          .style({ width: 20 });
+          .style(cellStyle);
         sheet
           .cell(_row, 2)
           .string(
@@ -231,20 +232,20 @@ export class ExportExcelService {
                 : '-'
             }`,
           )
-          .style({ width: 20 });
+          .style(cellStyle);
         sheet
           .cell(_row, 3)
           .string(`${u?.dopay || '-'}`)
-          .style({ width: 20 });
+          .style(cellStyle);
         sheet
           .cell(_row, 4)
           .string(`${u?.howmuch || '-'}`)
-          .style({ width: 20 });
+          .style(cellStyle);
         _row++;
       }
       console.log(sumpay);
       sheet.cell(1, 7).string('เงินรวมที่เก็บได้').style(cellStyle);
-      sheet.cell(2, 7).string(`${sumpay.sum}`);
+      sheet.cell(2, 7).string(`${sumpay.sum}`).style(cellStyle);
       ws.write('Schedule.xlsx', res);
     } catch (error) {
       throw error;
