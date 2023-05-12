@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { promises } from 'dns';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -25,7 +25,7 @@ export class UserService {
     try {
       const { name, email, password, img, tel, position } = bodyUser;
       const hashpassword = await this.hashPassWord(bodyUser.password);
-      console.log(password);
+
       const newUser = this.userRepository.create({
         name: name,
         email: email,
@@ -99,8 +99,15 @@ export class UserService {
 
   async updatePassword(id: number, body: UpdatePasswordDto) {
     try {
-      const { password } = body;
+      const { password, oldPassword } = body;
+      const user = await this.findUserOne(id);
+
+      const compare = await bcrypt.compare(oldPassword, user?.password);
       const updateHash = await this.hashPassWord(password);
+
+      if (!compare) {
+        throw new UnauthorizedException();
+      }
       const updatePassword = await this.userRepository.update(id, {
         password: updateHash,
       });

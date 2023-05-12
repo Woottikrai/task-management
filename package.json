@@ -17,7 +17,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migration:create": "ts-node ./node_modules/typeorm/cli.js migration:create --name",
+    "migration:show": "ts-node ./node_modules/typeorm/cli.js migration:show",
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
+    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",
@@ -42,6 +46,7 @@
     "dayjs": "^1.11.7",
     "ejs": "^3.1.9",
     "excel4node": "^1.8.2",
+    "exceljs": "4.3.0",
     "handlebars": "^4.7.7",
     "jsonwebtoken": "^9.0.0",
     "nodemailer": "^6.9.1",
@@ -51,6 +56,7 @@
     "rxjs": "^7.2.0",
     "socket.io": "^4.6.1",
     "typeorm": "^0.2.45"
+
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

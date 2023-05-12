@@ -7,8 +7,6 @@ import { Response, query } from 'express';
 import { Schedule } from 'src/entities/schedule.entity';
 import * as dayjs from 'dayjs';
 import { ScheduleService } from 'src/schedule/schedule.service';
-import detector from 'node_modules/image-size/dist/detector';
-import * as fs from 'fs';
 @Injectable()
 export class ExportExcelService {
   constructor(
@@ -19,6 +17,84 @@ export class ExportExcelService {
     private scheduleservice: ScheduleService,
   ) {}
 
+  async style() {
+    const ws = new xl.Workbook();
+
+    let cellStyle = ws.createStyle({
+      font: {
+        color: 'FF0000', // สีตัวอักษรเป็นสีแดง
+      },
+      alignment: {
+        wrapText: true,
+        horizontal: 'center',
+        vertical: 'center',
+      },
+      fill: {
+        type: 'pattern',
+        patternType: 'solid',
+        fgColor: 'DCEBFF', //
+      },
+      border: {
+        left: {
+          style: 'thin',
+          color: '000000', // สีเส้นขอบเป็นสีดำ
+        },
+        right: {
+          style: 'thin',
+          color: '000000', // สีเส้นขอบเป็นสีดำ
+        },
+        top: {
+          style: 'thin',
+          color: '000000', // สีเส้นขอบเป็นสีดำ
+        },
+        bottom: {
+          style: 'thin',
+          color: '000000', // สีเส้นขอบเป็นสีดำ
+        },
+      },
+    });
+    return cellStyle;
+  }
+
+  styleWh() {
+    const ws = new xl.Workbook();
+    const wh = ws.createStyle({
+      font: {
+        color: '000000', // สีตัวอักษรเป็นสีแดง
+      },
+      alignment: {
+        shrinkToFit: true,
+        wrapText: true,
+        horizontal: 'center',
+        vertical: 'center',
+      },
+      fill: {
+        type: 'pattern',
+        patternType: 'solid',
+        fgColor: 'DCEBFF', //
+      },
+      border: {
+        left: {
+          style: 'thin',
+          color: '000000', // สีเส้นขอบเป็นสีดำ
+        },
+        right: {
+          style: 'thin',
+          color: '000000', // สีเส้นขอบเป็นสีดำ
+        },
+        top: {
+          style: 'thin',
+          color: '000000', // สีเส้นขอบเป็นสีดำ
+        },
+        bottom: {
+          style: 'thin',
+          color: '000000', // สีเส้นขอบเป็นสีดำ
+        },
+      },
+    });
+    return wh;
+  }
+
   async exportUser(res: Response) {
     try {
       const user = await this.userRepository
@@ -28,85 +104,20 @@ export class ExportExcelService {
 
       const ws = new xl.Workbook();
       const sheet = ws.addWorksheet('sheet');
-      let cellStyle = ws.createStyle({
-        font: {
-          color: 'FF0000', // สีตัวอักษรเป็นสีแดง
-        },
-        alignment: {
-          wrapText: true,
-          horizontal: 'center',
-          vertical: 'center',
-        },
-        fill: {
-          type: 'pattern',
-          patternType: 'solid',
-          fgColor: 'DCEBFF', //
-        },
-        border: {
-          left: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          right: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          top: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          bottom: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-        },
-        width: 20, // กำหนดความกว้างของเซลให้เป็น 20
-        hight: 50,
-      });
 
-      const wh = ws.createStyle({
-        font: {
-          color: '000000', // สีตัวอักษรเป็นสีแดง
-        },
-        alignment: {
-          shrinkToFit: true,
-          wrapText: true,
-          horizontal: 'center',
-          vertical: 'center',
-        },
-        fill: {
-          type: 'pattern',
-          patternType: 'solid',
-          fgColor: 'DCEBFF', //
-        },
-        border: {
-          left: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          right: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          top: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          bottom: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-        },
-      });
+      const cellStyle = await this.style();
+      const wh = await this.styleWh();
       const header = ['ชื่อ', 'อีเมลล์', 'ตำแหน่ง', 'เบอร์โทรศัพท์', 'รูปภาพ'];
       let _row = 2;
+      const width = 10;
+      const height = width * 4;
 
       for (let i = 0; i < header.length; i++) {
         sheet
           .cell(1, i + 1)
           .string(header[i])
           .style(cellStyle);
-        sheet.column(i + 1).setWidth(50);
+        sheet.column(i + 1).setWidth(width);
       }
 
       for (const u of user) {
@@ -135,7 +146,7 @@ export class ExportExcelService {
             },
           });
         }
-        sheet.row(_row).setHeight(200);
+        sheet.row(_row).setHeight(height);
         sheet
           .cell(_row, 1)
           .string(`${u?.name || '-'}`)
@@ -171,41 +182,8 @@ export class ExportExcelService {
         .getMany();
       const ws = new xl.Workbook();
       const sheet = ws.addWorksheet('sheet');
-
-      let cellStyle = ws.createStyle({
-        font: {
-          color: '000000', // สีตัวอักษรเป็นสีแดง
-        },
-        alignment: {
-          shrinkToFit: true,
-          wrapText: true,
-          horizontal: 'center',
-          vertical: 'center',
-        },
-        fill: {
-          type: 'pattern',
-          patternType: 'solid',
-          fgColor: 'DCEBFF', //
-        },
-        border: {
-          left: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          right: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          top: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-          bottom: {
-            style: 'thin',
-            color: '000000', // สีเส้นขอบเป็นสีดำ
-          },
-        },
-      });
+      const cellStyle = await this.style();
+      const wh = await this.styleWh();
 
       const header = ['ชื่อ', 'วันที่ทำเวร', 'ทำหรือจ่าย', 'จำนวนเงินที่จ่าย'];
       for (let i = 0; i < header.length; i++) {
@@ -222,7 +200,7 @@ export class ExportExcelService {
         sheet
           .cell(_row, 1)
           .string(`${u?.user?.name || '-'}`)
-          .style(cellStyle);
+          .style(wh);
         sheet
           .cell(_row, 2)
           .string(
@@ -232,20 +210,20 @@ export class ExportExcelService {
                 : '-'
             }`,
           )
-          .style(cellStyle);
+          .style(wh);
         sheet
           .cell(_row, 3)
           .string(`${u?.dopay || '-'}`)
-          .style(cellStyle);
+          .style(wh);
         sheet
           .cell(_row, 4)
           .string(`${u?.howmuch || '-'}`)
-          .style(cellStyle);
+          .style(wh);
         _row++;
       }
-      console.log(sumpay);
-      sheet.cell(1, 7).string('เงินรวมที่เก็บได้').style(cellStyle);
-      sheet.cell(2, 7).string(`${sumpay.sum}`).style(cellStyle);
+
+      sheet.cell(1, 7).string('เงินรวมที่เก็บได้').style(wh);
+      sheet.cell(2, 7).string(`${sumpay.sum}`).style(wh);
       ws.write('Schedule.xlsx', res);
     } catch (error) {
       throw error;

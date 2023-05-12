@@ -10,7 +10,7 @@ import { EventModule } from './event/event.module';
 import { ScheduleModule as NestScheduleModule } from '@nestjs/schedule';
 import { ScheduleModule } from './schedule/schedule.module';
 import { ExportExcelModule } from './export-excel/export-excel.module';
-
+import { join } from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,6 +30,10 @@ import { ExportExcelModule } from './export-excel/export-excel.module';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
+          migrations: [join('dist', 'migrations', '*{.ts,.js}')],
+          cli: {
+            migrationsDir: join('src', 'migrations'),
+          },
         };
       },
     }),

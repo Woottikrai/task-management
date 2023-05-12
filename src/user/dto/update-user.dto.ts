@@ -18,5 +18,7 @@ export class UpdateUserDto {
 
 export class UpdatePasswordDto {
   @ApiProperty()
+  oldPassword: string;
+  @ApiProperty()
   password: string;
 }
