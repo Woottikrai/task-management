@@ -102,7 +102,6 @@ export class ScheduleService {
   // @Timeout(100)
   async checkDateAndSendEmail() {
     try {
-      console.log('Hello Test');
       const now = dayjs().format('YYYY-MM-DD');
       const findAll = await this.scheduleRepository
         .createQueryBuilder('schedule')
@@ -118,9 +117,8 @@ export class ScheduleService {
         for (const data of findAll) {
           const user = data?.user;
           const calendar = data?.calendar;
-          console.log(calendar.date);
+
           if (now === String(calendar?.date)) {
-            console.log('Hello');
             await this.notiService.sendMail(user?.email);
           }
         }
@@ -133,7 +131,6 @@ export class ScheduleService {
 
   async updateSchedule(id: number, body: UpdateScheduleDto) {
     try {
-      console.log(id);
       const { user, calendar, doPay, howMuch } = body;
       const findUser = await this.userService.findUserOne(user);
       const findCalendar = await this.calendarService.findDate(calendar);

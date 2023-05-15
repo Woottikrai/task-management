@@ -11,6 +11,7 @@ import { ScheduleModule as NestScheduleModule } from '@nestjs/schedule';
 import { ScheduleModule } from './schedule/schedule.module';
 import { ExportExcelModule } from './export-excel/export-excel.module';
 import { join } from 'path';
+import { ImportExcelModule } from './import-excel/import-excel.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -47,6 +48,7 @@ import { join } from 'path';
     NotiEmailModule,
     EventModule,
     ExportExcelModule,
+    ImportExcelModule,
   ],
 })
 export class AppModule {}

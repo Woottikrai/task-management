@@ -9,6 +9,7 @@ import * as dayjs from 'dayjs';
 import { ScheduleService } from 'src/schedule/schedule.service';
 import { UserService } from 'src/user/user.service';
 import { FilterQueryUserExportExcel } from './dto/filter.dto';
+import { create } from 'domain';
 @Injectable()
 export class ExportExcelService {
   constructor(
@@ -21,7 +22,7 @@ export class ExportExcelService {
   ) {}
 
   async queryUserExport(filter: FilterQueryUserExportExcel) {
-    const { name, position } = filter;
+    const { position, startDate, endDate, limit } = filter;
     try {
       const user = this.userRepository
         .createQueryBuilder('user')
@@ -33,12 +34,13 @@ export class ExportExcelService {
         });
       }
 
-      if (name) {
-        user.andWhere('user.name LIKE :name', {
-          name: `%${name}%`,
+      if (startDate && endDate) {
+        user.andWhere('user.createAt BETWEEN :startDate AND :endDate', {
+          startDate: dayjs(startDate).startOf('day').toISOString(),
+          endDate: dayjs(endDate).endOf('day').toISOString(),
         });
       }
-      user.limit(filter.limit);
+      user.limit(limit);
       return await user.getMany();
     } catch (error) {
       throw error;
@@ -52,7 +54,6 @@ export class ExportExcelService {
       const user = await this.queryUserExport(filter);
       const cellStyle = this.styleWh();
       const header = ['ชื่อ', 'อีเมลล์', 'ตำแหน่ง'];
-
       sheet.cell(1, 3, 1, 5, true).string(`รายชื่อพนักงาน`).style(cellStyle);
 
       for (let i = 0; i < header.length; i++) {

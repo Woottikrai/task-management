@@ -5,9 +5,13 @@ import { CommonFilter } from 'src/shared/common-filter';
 export class FilterQueryUserExportExcel extends CommonFilter {
   @ApiProperty({ required: false })
   @IsOptional()
-  name: string;
+  position: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  position: number;
+  startDate: Date;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  endDate: Date;
 }
